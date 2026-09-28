@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { OrderRepository } from '../infrastructure/in-memory-order.repository.js';
+import { OrderRepository, OrderSearchField } from '../infrastructure/in-memory-order.repository.js';
 import { OrderProps, DraftOrderProps } from '../domain/order.types.js';
 
 export function createOrderRouter(repo: OrderRepository): Router {
@@ -10,6 +10,7 @@ export function createOrderRouter(repo: OrderRepository): Router {
     try {
       const {
         q,
+        searchField,
         status,
         branch,
         type,
@@ -25,6 +26,7 @@ export function createOrderRouter(repo: OrderRepository): Router {
 
       const result = await repo.filterOrders({
         query: q as string,
+        searchField: (['all', 'cnee', 'bill', 'ref', 'ct'].includes(searchField as string) ? searchField : 'all') as OrderSearchField,
         status: status as string,
         branch: branch as string,
         type: type as string,

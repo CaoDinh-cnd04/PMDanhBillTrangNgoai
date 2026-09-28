@@ -1,7 +1,47 @@
 import { OrderProps, DraftOrderProps } from '../domain/order.types.js';
 
+/** Trường áp dụng cho từ khóa tìm kiếm ('all' = tìm trên mọi trường chính). */
+export type OrderSearchField = 'all' | 'cnee' | 'bill' | 'ref' | 'ct';
+
+/** Tổng hợp theo kết quả lọc — số đếm trạng thái bỏ qua bộ lọc trạng thái để hiện trên tab. */
+export interface OrderListSummary {
+  statusCounts: Record<'all' | OrderProps['st'], number>;
+  totalPieces: number;
+  totalWeight: number;
+}
+
+const parseKg = (pcs: string): number => {
+  const m = pcs.match(/([\d.]+)\s*kg/i);
+  return m ? parseFloat(m[1]) : 0;
+};
+
+const parsePieces = (pcs: string): number => {
+  const m = pcs.match(/^\s*(\d+)/);
+  return m ? parseInt(m[1], 10) : 0;
+};
+
+/** 'dd/mm/yyyy[ hh:mm]' → timestamp để so sánh; 0 nếu rỗng. */
+const parseViDate = (s?: string | null): number => {
+  const m = (s || '').match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+  return m ? new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime() : 0;
+};
+
+const toIsoDate = (s: string): string => {
+  const m = s.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : '';
+};
+
+const SORT_VALUE: Record<string, (o: OrderProps) => number | string> = {
+  created: o => parseViDate(o.created),
+  sent: o => parseViDate(o.sent),
+  pod: o => (o.pod ? parseViDate(`${o.pod.date} ${o.pod.time}`) : 0),
+  bill: o => Number(o.bill) || 0,
+  seq: o => o.seq
+};
+
 export interface OrderFilterParams {
   query?: string;
+  searchField?: OrderSearchField;
   status?: string;
   branch?: string;
   type?: string;
@@ -190,7 +230,8 @@ export class OrderRepository {
   }
 
   /**
-   * Filter orders with pagination, search, status chips, branch chips, weight and date ranges.
+   * Lọc đơn hàng: tìm kiếm (theo trường), trạng thái, chi nhánh, loại hàng, khoảng ngày tạo & cân nặng.
+   * Trả về trang hiện tại + tổng hợp (số đếm theo trạng thái, tổng kiện, tổng cân) của toàn bộ kết quả lọc.
    */
   async filterOrders(params: OrderFilterParams): Promise<{
     items: OrderProps[];
@@ -198,9 +239,11 @@ export class OrderRepository {
     page: number;
     pageSize: number;
     totalPages: number;
+    summary: OrderListSummary;
   }> {
     const {
       query = '',
+      searchField = 'all',
       status = 'all',
       branch = 'all',
       type = '',
@@ -214,70 +257,53 @@ export class OrderRepository {
       sortDir = 'desc'
     } = params;
 
-    const parseKg = (pcs: string): number => {
-      const m = pcs.match(/([\d.]+)\s*kg/i);
-      return m ? parseFloat(m[1]) : 0;
-    };
-
-    const parseDateOnly = (s: string): string => {
-      const m = s.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-      return m ? `${m[3]}-${m[2]}-${m[1]}` : '';
-    };
-
     const q = query.toLowerCase().trim();
+    const searchText = (o: OrderProps): string =>
+      searchField === 'all'
+        ? `${o.bill} ${o.ref} ${o.cnee} ${o.ct} ${o.content} ${o.branch} ${o.connect || ''}`
+        : String(o[searchField] ?? '');
 
-    let filtered = this.orders.filter(o => {
-      if (status !== 'all' && o.st !== status) return false;
+    // Mọi điều kiện trừ trạng thái — dùng cho số đếm trên tab trạng thái
+    const base = this.orders.filter(o => {
       if (branch !== 'all' && o.branch !== branch) return false;
       if (type && o.type !== type) return false;
-
-      if (q) {
-        const text = `${o.bill} ${o.ref} ${o.cnee} ${o.ct} ${o.content} ${o.branch} ${o.connect || ''}`.toLowerCase();
-        if (!text.includes(q)) return false;
-      }
-
-      if (fromDate) {
-        const d = parseDateOnly(o.created);
-        if (d && d < fromDate) return false;
-      }
-
-      if (toDate) {
-        const d = parseDateOnly(o.created);
-        if (d && d > toDate) return false;
-      }
-
+      if (q && !searchText(o).toLowerCase().includes(q)) return false;
+      const created = toIsoDate(o.created);
+      if (fromDate && created && created < fromDate) return false;
+      if (toDate && created && created > toDate) return false;
       const kg = parseKg(o.pcs);
       if (weightFrom !== undefined && !isNaN(weightFrom) && kg < weightFrom) return false;
       if (weightTo !== undefined && !isNaN(weightTo) && kg > weightTo) return false;
-
       return true;
     });
 
-    // Sorting
+    const statusCounts: OrderListSummary['statusCounts'] = { all: base.length, wait: 0, fly: 0, nd: 0, ok: 0, late: 0 };
+    base.forEach(o => { statusCounts[o.st] += 1; });
+
+    const filtered = status === 'all' ? base : base.filter(o => o.st === status);
+
+    const valueOf = SORT_VALUE[sortBy] ?? ((o: OrderProps) => String((o as unknown as Record<string, unknown>)[sortBy] ?? '').toLowerCase());
+    const dir = sortDir === 'asc' ? 1 : -1;
     filtered.sort((a, b) => {
-      let va: unknown = (a as unknown as Record<string, unknown>)[sortBy];
-      let vb: unknown = (b as unknown as Record<string, unknown>)[sortBy];
-
-      if (typeof va === 'string') va = va.toLowerCase();
-      if (typeof vb === 'string') vb = vb.toLowerCase();
-
-      const dir = sortDir === 'asc' ? 1 : -1;
-      if (va == null || vb == null) return 0;
-      return ((va as number | string) < (vb as number | string) ? -1 : (va as number | string) > (vb as number | string) ? 1 : 0) * dir;
+      const va = valueOf(a), vb = valueOf(b);
+      return (va < vb ? -1 : va > vb ? 1 : 0) * dir || b.seq - a.seq;
     });
 
     const total = filtered.length;
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     const currentPage = Math.min(Math.max(1, page), totalPages);
 
-    const items = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
     return {
-      items,
+      items: filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
       total,
       page: currentPage,
       pageSize,
-      totalPages
+      totalPages,
+      summary: {
+        statusCounts,
+        totalPieces: filtered.reduce((sum, o) => sum + parsePieces(o.pcs), 0),
+        totalWeight: Math.round(filtered.reduce((sum, o) => sum + parseKg(o.pcs), 0) * 10) / 10
+      }
     };
   }
 }

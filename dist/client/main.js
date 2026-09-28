@@ -16,16 +16,26 @@ const HUBS = {
     SEA: ['SEA - Full']
 };
 const FLAGS = {
-    Singapore: '🇸🇬',
-    Malaysia: '🇲🇾',
-    'United States': '🇺🇸',
-    Australia: '🇦🇺',
-    Belgium: '🇧🇪',
-    China: '🇨🇳',
-    Mexico: '🇲🇽',
-    Canada: '🇨🇦',
-    Taiwan: '🇹🇼',
-    'United Arab Emirates': '🇦🇪'
+    Singapore: 'SG',
+    Malaysia: 'MY',
+    'United States': 'US',
+    Australia: 'AU',
+    Belgium: 'BE',
+    China: 'CN',
+    Mexico: 'MX',
+    Canada: 'CA',
+    Taiwan: 'TW',
+    'United Arab Emirates': 'AE'
+};
+// Icon nét đơn sắc cho các nút thao tác (thay emoji)
+const IC = {
+    print: '<svg class="svi" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>',
+    eye: '<svg class="svi" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    trash: '<svg class="svi" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+    edit: '<svg class="svi" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>',
+    alert: '<svg class="svi" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg>',
+    copy: '<svg class="svi" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>',
+    more: '<svg class="svi" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>'
 };
 const SENDERS = [
     { n: 'Công ty TNHH ABC', d: '14 Sầm Sơn, Tân Sơn Nhất, TP.HCM', c: 'Nguyễn Văn A', t: '0901 234 567' },
@@ -118,11 +128,11 @@ const ST = {
     late: ['b-late', 'Vượt ngày']
 };
 const SICON = {
-    wait: ['🕒', 'Chưa đi', 'var(--blue)'],
-    fly: ['✈️', 'Đã đi', 'var(--green-d)'],
-    nd: ['🚚', 'Chưa phát', 'var(--amber)'],
-    ok: ['✅', 'Đã phát', 'var(--green-dd)'],
-    late: ['⏰', 'Vượt ngày', 'var(--red)']
+    wait: ['', 'Chưa đi', 'var(--blue)'],
+    fly: ['', 'Đã đi', 'var(--green-d)'],
+    nd: ['', 'Chưa phát', 'var(--amber)'],
+    ok: ['', 'Đã phát', 'var(--green-dd)'],
+    late: ['', 'Vượt ngày', 'var(--red)']
 };
 const STRANK = { wait: 1, fly: 2, nd: 3, ok: 4, late: 5 };
 const CURSYM = { USD: '$', EUR: '€', VND: '₫' };
@@ -170,21 +180,21 @@ let TROUBLES = [
 ];
 let trbSeq = 1025;
 const SRC = {
-    tiktok: ['🎵', 'TikTok', 'src-tiktok'],
-    shopify: ['🛍️', 'Shopify', 'src-shopify'],
-    shopee: ['🧡', 'Shopee', 'src-shopee'],
-    lazada: ['💙', 'Lazada', 'src-lazada'],
-    api: ['🔌', 'API', 'src-api'],
-    excel: ['📄', 'Excel', 'src-excel'],
-    manual: ['✍️', 'Tay', 'src-manual']
+    tiktok: ['', 'TikTok', 'src-tiktok'],
+    shopify: ['', 'Shopify', 'src-shopify'],
+    shopee: ['', 'Shopee', 'src-shopee'],
+    lazada: ['', 'Lazada', 'src-lazada'],
+    api: ['', 'API', 'src-api'],
+    excel: ['', 'Excel', 'src-excel'],
+    manual: ['', 'Tay', 'src-manual']
 };
 const ECOM_ST = {
-    created: ['🟢', 'Đã tạo', 'b-fly'],
-    picked_up: ['🚚', 'Đã lấy', 'b-wait'],
-    departed: ['✈️', 'Đã đi', 'b-fly'],
-    delivered: ['✅', 'Đã phát', 'b-ok'],
-    exception: ['⚠️', 'Lỗi', 'b-late'],
-    weighing: ['⚖️', 'Chờ cân đo', 'b-nd']
+    created: ['', 'Đã tạo', 'b-fly'],
+    picked_up: ['', 'Đã lấy', 'b-wait'],
+    departed: ['', 'Đã đi', 'b-fly'],
+    delivered: ['', 'Đã phát', 'b-ok'],
+    exception: ['', 'Lỗi', 'b-late'],
+    weighing: ['', 'Chờ cân đo', 'b-nd']
 };
 let ECOM = [
     { src: 'tiktok', ref: 'TT-88213', bill: '6156991', cnee: 'Emma W.', ct: 'Singapore', items: 3, kg: 1.2, st: 'created', note: '' },
@@ -196,7 +206,7 @@ let ECOM = [
     { src: 'lazada', ref: 'LZ-2201', bill: '6156986', cnee: 'Siti R.', ct: 'Singapore', items: 2, kg: 0, st: 'weighing', note: 'Chờ VA cân đo' },
     { src: 'tiktok', ref: 'TT-88190', bill: '6156985', cnee: 'Chen W.', ct: 'China', items: 5, kg: 3.4, st: 'created', note: '' }
 ];
-const PRICE_NOTE = '⚠️ Giá trên là ước tính, CHƯA bao gồm các phí charge khác căn cứ theo mặt hàng và của hãng bay quy định thêm. Vui lòng đọc quy định của hãng và liên hệ nhân viên Việt An để được tư vấn thêm.';
+const PRICE_NOTE = 'Giá trên là ước tính, chưa bao gồm các phí charge khác căn cứ theo mặt hàng và của hãng bay quy định thêm. Vui lòng đọc quy định của hãng và liên hệ nhân viên Việt An để được tư vấn thêm.';
 const PRICE_STEPS = (() => {
     const a = [];
     for (let w = 0.5; w <= 70.0001; w += 0.5)
@@ -264,11 +274,11 @@ function savePrice() {
 }
 let PRICE_SVCS = loadPrice();
 const AI_ITEMS = [
-    { key: 'ao-thun', label: '👕 Áo thun', emoji: '👕', en: "Men's cotton T-shirt", vi: 'Áo thun cotton nam', mnf: 'Cty May Việt Tiến, TP.HCM, VN', mat: 'Cotton 100%', origin: 'VN', hs: ['6109.10', '6109.90', '6205.20'], unit: 'PCS', qty: 2, price: 6, conf: 96 },
-    { key: 'tai-nghe', label: '🎧 Tai nghe bluetooth', emoji: '🎧', en: 'Wireless bluetooth earbuds', vi: 'Tai nghe không dây bluetooth', mnf: 'Shenzhen Audio Co., Ltd, CN', mat: 'Nhựa ABS + pin lithium', origin: 'CN', hs: ['8518.30', '8517.62', '8518.29'], unit: 'SET', qty: 1, price: 15, conf: 92, warn: '⚠️ Có pin lithium — hàng nhạy cảm' },
-    { key: 'do-choi', label: '🧸 Đồ chơi nhựa', emoji: '🧸', en: 'Plastic toy car', vi: 'Xe ô tô đồ chơi nhựa', mnf: 'Cty Nhựa Chợ Lớn, TP.HCM, VN', mat: 'Nhựa PP', origin: 'VN', hs: ['9503.00', '9503.90'], unit: 'PCS', qty: 3, price: 4, conf: 94 },
-    { key: 'my-pham', label: '💄 Son môi', emoji: '💄', en: 'Lipstick', vi: 'Son môi', mnf: 'Cty Mỹ phẩm ABC, TP.HCM, VN', mat: 'Sáp ong, dầu dưỡng, chất tạo màu', origin: 'VN', hs: ['3304.10', '3304.99'], unit: 'PCS', qty: 5, price: 7, conf: 90, warn: '⚠️ Mỹ phẩm — có thể cần công bố' },
-    { key: 'giay', label: '👟 Giày thể thao', emoji: '👟', en: 'Sports sneakers', vi: 'Giày thể thao', mnf: "Cty Giày Bình Tiên (Biti's), VN", mat: 'Vải dệt + đế cao su', origin: 'VN', hs: ['6404.11', '6404.19'], unit: 'PCS', qty: 1, price: 20, conf: 93 }
+    { key: 'ao-thun', label: 'Áo thun', emoji: '', en: "Men's cotton T-shirt", vi: 'Áo thun cotton nam', mnf: 'Cty May Việt Tiến, TP.HCM, VN', mat: 'Cotton 100%', origin: 'VN', hs: ['6109.10', '6109.90', '6205.20'], unit: 'PCS', qty: 2, price: 6, conf: 96 },
+    { key: 'tai-nghe', label: 'Tai nghe bluetooth', emoji: '', en: 'Wireless bluetooth earbuds', vi: 'Tai nghe không dây bluetooth', mnf: 'Shenzhen Audio Co., Ltd, CN', mat: 'Nhựa ABS + pin lithium', origin: 'CN', hs: ['8518.30', '8517.62', '8518.29'], unit: 'SET', qty: 1, price: 15, conf: 92, warn: 'Có pin lithium — hàng nhạy cảm' },
+    { key: 'do-choi', label: 'Đồ chơi nhựa', emoji: '', en: 'Plastic toy car', vi: 'Xe ô tô đồ chơi nhựa', mnf: 'Cty Nhựa Chợ Lớn, TP.HCM, VN', mat: 'Nhựa PP', origin: 'VN', hs: ['9503.00', '9503.90'], unit: 'PCS', qty: 3, price: 4, conf: 94 },
+    { key: 'my-pham', label: 'Son môi', emoji: '', en: 'Lipstick', vi: 'Son môi', mnf: 'Cty Mỹ phẩm ABC, TP.HCM, VN', mat: 'Sáp ong, dầu dưỡng, chất tạo màu', origin: 'VN', hs: ['3304.10', '3304.99'], unit: 'PCS', qty: 5, price: 7, conf: 90, warn: 'Mỹ phẩm — có thể cần công bố' },
+    { key: 'giay', label: 'Giày thể thao', emoji: '', en: 'Sports sneakers', vi: 'Giày thể thao', mnf: "Cty Giày Bình Tiên (Biti's), VN", mat: 'Vải dệt + đế cao su', origin: 'VN', hs: ['6404.11', '6404.19'], unit: 'PCS', qty: 1, price: 20, conf: 93 }
 ];
 // UI State Variables
 let step = 1, createMode = 'wizard';
@@ -351,15 +361,54 @@ function bindCounters() {
         upd();
     });
 }
+let curView = 'create';
+const ICON_MOON = '<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+const ICON_SUN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+// Đánh dấu mục sidebar đang mở; view "create" phân biệt theo chế độ (từng bước / 1 trang)
+function syncNavActive() {
+    document.querySelectorAll('.nav a').forEach(el => {
+        const on = el.dataset.view === curView && (curView !== 'create' || (el.dataset.mode || 'wizard') === createMode);
+        el.classList.toggle('on', on);
+    });
+    document.querySelectorAll('.nav-sec').forEach(sec => {
+        const hasOn = !!sec.querySelector('a.on');
+        sec.classList.toggle('has-on', hasOn);
+        if (hasOn)
+            setNavSection(sec, true, false);
+    });
+}
+function setNavSection(sec, open, persist = true) {
+    sec.classList.toggle('open', open);
+    sec.querySelector('.nav-parent')?.setAttribute('aria-expanded', String(open));
+    if (!persist)
+        return;
+    try {
+        const st = JSON.parse(localStorage.getItem('va_nav_sec') || '{}');
+        st[sec.dataset.sec || ''] = open;
+        localStorage.setItem('va_nav_sec', JSON.stringify(st));
+    }
+    catch (e) { }
+}
+// Tổng badge các mục con → hiện trên nút nhóm khi nhóm đang đóng
+function updateNavSums() {
+    document.querySelectorAll('.nav-sec').forEach(sec => {
+        let n = 0;
+        sec.querySelectorAll('.nav-sub .nbadge').forEach(b => {
+            if (b.style.display !== 'none')
+                n += +(b.textContent || 0) || 0;
+        });
+        const sum = sec.querySelector('.nsum');
+        if (sum)
+            sum.textContent = n ? String(n) : '';
+    });
+}
 function nav(v) {
     document.querySelectorAll('.view').forEach(s => (s.hidden = true));
     const target = document.getElementById('v-' + v);
     if (target)
         target.hidden = false;
-    document.querySelectorAll('.nav a').forEach(a => {
-        const el = a;
-        el.classList.toggle('on', el.dataset.view === v);
-    });
+    curView = v;
+    syncNavActive();
     const crumb = document.getElementById('crumb');
     if (crumb)
         crumb.textContent = CRUMBS[v] || v;
@@ -378,6 +427,7 @@ function nav(v) {
 }
 function setCreateMode(m) {
     createMode = m;
+    syncNavActive();
     const quick = m === 'quick';
     const vCreate = document.getElementById('v-create');
     if (vCreate)
@@ -491,7 +541,7 @@ function validate(n) {
             first.focus();
             first.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        toast('⚠️ Còn ô bắt buộc chưa điền — mình đã tô đỏ giúp bạn');
+        toast('Còn ô bắt buộc chưa điền — mình đã tô đỏ giúp bạn');
     }
     return ok;
 }
@@ -531,10 +581,12 @@ function setType(t) {
     if (!pack && over2)
         over2.hidden = true;
     updateMultiBox();
+    calcKien();
 }
+// DocToPackRule: chứng từ > 2kg tự chuyển sang hàng hóa
 function checkDocWeight(el) {
     const w = parseFloat(el.value) || 0;
-    if (w <= 2)
+    if (isPack() || w <= 2)
         return;
     const pack = document.querySelector('[name=ptype][value="PACK"]');
     if (pack)
@@ -544,23 +596,42 @@ function checkDocWeight(el) {
     const brief = document.querySelector('[name=brief]');
     if (brief && content)
         brief.value = content;
-    const g = document.querySelector('#kienBody .kien-row [data-k=g]');
-    if (g) {
-        g.value = String(w);
-        calcKien();
-    }
+    syncQuickPieces();
     const over2 = document.getElementById('over2note');
     if (over2) {
         over2.hidden = false;
         over2.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-    toast('📦 Tài liệu trên 2kg được tính là hàng hóa — đã chuyển sang khai Hàng hóa (PACK).', 'good');
+    toast('Tài liệu trên 2kg được tính là hàng hóa — đã chuyển sang khai Hàng hóa (PACK).', 'good');
+}
+// Số kiện / cân nặng ở bước 1 → bảng kiện ở bước 2 (khi bảng chỉ có 1 dòng)
+function syncQuickPieces() {
+    const pcsEl = document.getElementById('s1Pcs');
+    const grossEl = document.getElementById('s1Gross');
+    if (!pcsEl || !grossEl)
+        return;
+    if (!isPack()) {
+        checkDocWeight(grossEl);
+        return;
+    }
+    const rows = document.querySelectorAll('#kienBody .kien-row');
+    if (rows.length !== 1)
+        return;
+    const pcs = Math.max(1, parseInt(pcsEl.value) || 1);
+    const gross = parseFloat(grossEl.value) || 0;
+    const sl = rows[0].querySelector('[data-k=sl]');
+    const g = rows[0].querySelector('[data-k=g]');
+    if (sl)
+        sl.value = String(pcs);
+    if (g)
+        g.value = gross ? String(+(gross / pcs).toFixed(2)) : '';
+    calcKien();
 }
 function updateFlag() {
     const country = document.querySelector('[name=r_country]')?.value || '';
     const flagEl = document.getElementById('r_flag');
     if (flagEl)
-        flagEl.textContent = FLAGS[country] || '🏳️';
+        flagEl.textContent = FLAGS[country] || '';
 }
 function kienRow(d = {}) {
     const id = ++kienId;
@@ -629,6 +700,26 @@ function calcKien() {
         totCharge.textContent = charge.toFixed(1);
     if (kienCount)
         kienCount.textContent = pcs + ' kiện';
+    const nRows = document.querySelectorAll('#kienBody .kien-row').length;
+    if (!nRows)
+        return;
+    const multi = nRows > 1;
+    const pcsEl = document.getElementById('s1Pcs');
+    const grossEl = document.getElementById('s1Gross');
+    const active = document.activeElement;
+    if (isPack() && pcsEl && grossEl && active !== pcsEl && active !== grossEl) {
+        pcsEl.value = String(pcs);
+        grossEl.value = g ? String(+g.toFixed(2)) : '';
+    }
+    if (pcsEl)
+        pcsEl.readOnly = isPack() && multi;
+    if (grossEl)
+        grossEl.readOnly = isPack() && multi;
+    const hint = document.getElementById('s1Hint');
+    if (hint)
+        hint.textContent = !isPack() ? 'Chứng từ trên 2kg sẽ tự chuyển sang hàng hóa (PACK).'
+            : multi ? 'Đơn có nhiều dòng kiện — tổng được tính từ bảng kiện ở bước 2.'
+                : 'Khai kích thước từng kiện ở bước 2 để tính trọng lượng quy đổi.';
     renderKienWarn(evalSurcharge(g, vol));
 }
 function evalSurcharge(gross, vol) {
@@ -672,8 +763,8 @@ function renderKienWarn(list) {
     const crit = list.some(w => w.lv === 'crit');
     el.className = 'warn-box ' + (crit ? 'red' : 'amber');
     el.innerHTML = `
-    <div class="warn-head">${crit ? '⛔ Kiện vượt giới hạn — cần xử lý' : '⚠️ Cảnh báo phụ phí kiện hàng'}</div>
-    ${list.map(w => `<div class="warn-item"><span class="wi">${w.lv === 'crit' ? '⛔' : w.lv === 'info' ? '📦' : '💡'}</span><div><b>${w.t}</b><div class="wd">${w.d}</div></div></div>`).join('')}
+    <div class="warn-head">${crit ? 'Kiện vượt giới hạn — cần xử lý' : 'Cảnh báo phụ phí kiện hàng'}</div>
+    ${list.map(w => `<div class="warn-item"><span class="wi wi-${w.lv || 'warn'}"></span><div><b>${w.t}</b><div class="wd">${w.d}</div></div></div>`).join('')}
     <div class="warn-sug">→ Cân nhắc đổi dịch vụ phù hợp hoặc chia nhỏ / đóng gói lại kiện để tránh phụ phí.</div>`;
 }
 function invRow(d = {}) {
@@ -808,10 +899,10 @@ function renderCatMenu() {
     const all = CATEGORIES.filter(m);
     let h = '';
     if ('nhiều loại hàng'.includes(q)) {
-        h += `<div class="catdd-item ${cur === 'Nhiều loại hàng' ? 'on' : ''}" style="background:var(--green-tint2);font-weight:600" onclick="selectCat('__MULTI__')"><span class="nm">🧩 Nhiều loại hàng <span style="color:var(--muted);font-weight:400;font-size:11px">— chọn nhiều nhóm</span></span></div>`;
+        h += `<div class="catdd-item ${cur === 'Nhiều loại hàng' ? 'on' : ''}" style="background:var(--green-tint2);font-weight:600" onclick="selectCat('__MULTI__')"><span class="nm">Nhiều loại hàng <span style="color:var(--muted);font-weight:400;font-size:11px">— chọn nhiều nhóm</span></span></div>`;
     }
     if (favs.length)
-        h += '<div class="catdd-sec">★ Nhóm thường dùng</div>' + favs.map(c => catItemHtml(c, cur)).join('');
+        h += '<div class="catdd-sec">Nhóm thường dùng</div>' + favs.map(c => catItemHtml(c, cur)).join('');
     h += '<div class="catdd-sec">Tất cả nhóm (' + CATEGORIES.length + ')</div>' + all.map(c => catItemHtml(c, cur)).join('');
     L.innerHTML = h;
 }
@@ -918,7 +1009,7 @@ function toggleCatFav(ev, c) {
     const was = FAV_CATS.includes(c);
     FAV_CATS = was ? FAV_CATS.filter(x => x !== c) : [c, ...FAV_CATS];
     renderCatMenu();
-    toast(was ? ('Đã bỏ "' + c + '" khỏi thường dùng') : ('★ Đã ghim "' + c + '" vào nhóm thường dùng'));
+    toast(was ? ('Đã bỏ "' + c + '" khỏi thường dùng') : ('Đã ghim "' + c + '" vào nhóm thường dùng'));
 }
 function orderSummary() {
     const g = (n) => (document.querySelector('[name=' + n + ']') || {}).value || '';
@@ -932,10 +1023,10 @@ function orderSummary() {
         service: hub || g('service') || '—',
         branch: g('branch') || 'TP.HCM',
         ref: g('ref') || '',
-        pcs: pack ? (pcs + ' kiện · ' + charge + ' kg') : ('1 kiện' + (g('docWeight') ? ' · ' + g('docWeight') + ' kg' : '')),
+        pcs: pack ? (pcs + ' kiện · ' + charge + ' kg') : ((g('pcs') || '1') + ' kiện' + (g('gross') ? ' · ' + g('gross') + ' kg' : '')),
         content: pack ? (g('brief') || 'Hàng hóa') : (g('docContent') || 'Chứng từ'),
         date: nowStr(),
-        charge: pack ? (+charge || 0) : (+g('docWeight') || 0)
+        charge: pack ? (+charge || 0) : (+g('gross') || 0)
     };
 }
 function computeFees(s) {
@@ -985,14 +1076,14 @@ function doCreate() {
     const s = pendingSummary || orderSummary();
     DRAFTS.unshift({ id: 'd' + Date.now(), stt: 'ready', cnee: s.cnee, ct: s.ct, service: s.service, branch: s.branch, ref: s.ref, pcs: s.pcs, content: s.content, date: s.date });
     updateDraftCount();
-    toast('✓ Đã tạo đơn (chưa in). Vào "Đơn nháp & chưa in" để In & cấp mã bill.', 'good');
+    toast('Đã tạo đơn (chưa in). Vào "Đơn nháp & chưa in" để In & cấp mã bill.', 'good');
     setTimeout(() => nav('drafts'), 700);
 }
 function saveDraft() {
     const s = orderSummary();
     DRAFTS.unshift({ id: 'd' + Date.now(), stt: 'draft', cnee: s.cnee, ct: s.ct, service: s.service, branch: s.branch, ref: s.ref, pcs: s.pcs, content: s.content, date: s.date });
     updateDraftCount();
-    toast('💾 Đã lưu nháp — xem ở "Đơn nháp & chưa in"');
+    toast('Đã lưu nháp — xem ở "Đơn nháp & chưa in"');
     setTimeout(() => nav('drafts'), 700);
 }
 function renderDrafts() {
@@ -1005,9 +1096,9 @@ function renderDrafts() {
             tr.style.cursor = 'default';
             tr.innerHTML = `<td>${badge}</td><td class="cnee">${d.cnee}</td><td>${FLAGS[d.ct] || ''} ${d.ct}</td><td class="muted">${d.service}</td><td>${d.pcs}</td><td>${d.content}</td><td class="muted tnum">${d.date}</td>
        <td class="actions">
-         <button class="btn ghost sm" onclick="editDraft('${d.id}')">✎ ${ready ? 'Sửa' : 'Tiếp tục'}</button>
-         ${ready ? `<button class="btn primary sm" onclick="printDraft('${d.id}')">🖨 In &amp; cấp bill</button>` : `<button class="btn ghost sm" disabled style="opacity:.45;cursor:not-allowed" title="Hoàn thiện đơn trước khi in">🖨 In</button>`}
-         <button class="act" title="Xóa" onclick="delDraft('${d.id}')" style="color:var(--red)">🗑</button></td>`;
+         <button class="btn ghost sm" onclick="editDraft('${d.id}')">${ready ? 'Sửa' : 'Tiếp tục'}</button>
+         ${ready ? `<button class="btn primary sm" onclick="printDraft('${d.id}')">In &amp; cấp bill</button>` : `<button class="btn ghost sm" disabled style="opacity:.45;cursor:not-allowed" title="Hoàn thiện đơn trước khi in">In</button>`}
+         <button class="act" title="Xóa" onclick="delDraft('${d.id}')" style="color:var(--red)">${IC.trash}</button></td>`;
             b.appendChild(tr);
         });
         if (!DRAFTS.length)
@@ -1042,7 +1133,7 @@ function printDraft(id) {
     renderDrafts();
     updateDraftCount();
     renderOrders();
-    toast('🖨 Đã cấp mã bill ' + bill + ' & in. Đơn chuyển sang "Đơn hàng của tôi" và đã khóa.', 'good');
+    toast('Đã cấp mã bill ' + bill + ' & in. Đơn chuyển sang "Đơn hàng của tôi" và đã khóa.', 'good');
     setTimeout(() => nav('orders'), 1100);
 }
 function updateDraftCount() {
@@ -1052,6 +1143,7 @@ function updateDraftCount() {
         e.textContent = String(n);
         e.style.display = n ? '' : 'none';
     }
+    updateNavSums();
 }
 function openTrouble(bill) {
     curTrbBill = bill;
@@ -1082,7 +1174,7 @@ function submitTrouble() {
     const desc = document.getElementById('trbDesc')?.value.trim() || '';
     if (!desc) {
         document.getElementById('trbDesc')?.classList.add('err');
-        toast('⚠️ Vui lòng mô tả chi tiết sự cố');
+        toast('Vui lòng mô tả chi tiết sự cố');
         return;
     }
     document.getElementById('trbDesc')?.classList.remove('err');
@@ -1107,7 +1199,7 @@ function submitTrouble() {
     });
     closeTrb();
     updateTrbCount();
-    toast('✓ Đã gửi báo cáo sự cố cho đơn ' + curTrbBill + ' tới CS Việt An', 'good');
+    toast('Đã gửi báo cáo sự cố cho đơn ' + curTrbBill + ' tới CS Việt An', 'good');
     setTimeout(() => nav('trouble'), 700);
 }
 function renderTroubles() {
@@ -1127,17 +1219,17 @@ function renderTroubles() {
         tr.innerHTML = `<td><span class="bill">${t.id}</span></td><td><span class="bill">${t.bill}</span><div class="muted">${t.cnee}</div></td>
       <td>${t.type}</td><td><span class="badge ${lc}">${lx}</span></td><td class="muted tnum">${t.date}</td><td><span class="badge ${sc}">${sx}</span></td>
       <td class="actions"><button class="btn ghost sm" onclick="openTroubleDetail('${t.id}')">Xem</button>
-        ${t.status !== 'done' ? `<button class="btn ghost sm" onclick="remindTrouble('${t.id}')">🔔 Nhắc CS</button>` : ''}</td>`;
+        ${t.status !== 'done' ? `<button class="btn ghost sm" onclick="remindTrouble('${t.id}')">Nhắc CS</button>` : ''}</td>`;
         b.appendChild(tr);
     });
     if (!TROUBLES.length)
-        b.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">Chưa có sự cố nào. Vào "Đơn hàng của tôi" và bấm ⚠ trên đơn để báo cáo.</td></tr>';
+        b.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">Chưa có sự cố nào. Vào "Đơn hàng của tôi" và bấm trên đơn để báo cáo.</td></tr>';
     const trbCount = document.getElementById('trbCount');
     if (trbCount)
         trbCount.textContent = TROUBLES.length + ' yêu cầu hỗ trợ';
 }
 function remindTrouble(id) {
-    toast('🔔 Đã gửi nhắc CS về ticket ' + id);
+    toast('Đã gửi nhắc CS về ticket ' + id);
 }
 function openTroubleDetail(id) {
     const t = TROUBLES.find(x => x.id === id);
@@ -1162,8 +1254,8 @@ function openTroubleDetail(id) {
        <div class="muted" style="margin-top:8px">Gửi bởi ${t.req} · ${t.contact} · ${t.date}</div></div>
      ${t.reply ? `<div class="dr-sec"><h4>Phản hồi từ CS</h4><div style="background:var(--green-tint2);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:11px 13px;font-size:13px;line-height:1.6">${t.reply}</div></div>` : '<div class="dr-sec"><div class="muted">Chưa có phản hồi từ CS.</div></div>'}
      <div class="dr-sec" style="display:flex;gap:8px;flex-wrap:wrap">
-       ${t.status !== 'done' ? `<button class="btn ghost sm" onclick="remindTrouble('${t.id}')">🔔 Nhắc CS xử lý</button>` : ''}
-       <button class="btn ghost sm" onclick="toast('Mở trao đổi thêm với CS (demo)')">💬 Trao đổi thêm</button></div>`;
+       ${t.status !== 'done' ? `<button class="btn ghost sm" onclick="remindTrouble('${t.id}')">Nhắc CS xử lý</button>` : ''}
+       <button class="btn ghost sm" onclick="toast('Mở trao đổi thêm với CS (demo)')">Trao đổi thêm</button></div>`;
     }
     const drawer = document.getElementById('drawer');
     const scrim = document.getElementById('scrim');
@@ -1179,6 +1271,7 @@ function updateTrbCount() {
         e.textContent = String(n);
         e.style.display = n ? '' : 'none';
     }
+    updateNavSums();
 }
 function ecomTab(name) {
     document.querySelectorAll('#v-ecom .etab').forEach(b => b.classList.toggle('on', b.dataset.etab === name));
@@ -1229,8 +1322,8 @@ function renderEcomSrcChips() {
     Object.keys(SRC).forEach(s => {
         const n = ECOM.filter(o => o.src === s).length;
         if (n) {
-            const [i, nm] = SRC[s];
-            mk(s, i + ' ' + nm, n, ecomSrcFilter === s);
+            const [, nm] = SRC[s];
+            mk(s, nm, n, ecomSrcFilter === s);
         }
     });
 }
@@ -1242,21 +1335,21 @@ function renderEcom() {
         return;
     b.innerHTML = '';
     rows.forEach(o => {
-        const [si, sn, sc] = SRC[o.src] || ['📦', 'Khác', 'src-manual'];
-        const [ei, en, ec] = ECOM_ST[o.st] || ['🟢', 'Đã tạo', 'b-fly'];
+        const [, sn, sc] = SRC[o.src] || ['', 'Khác', 'src-manual'];
+        const [, en, ec] = ECOM_ST[o.st] || ['', 'Đã tạo', 'b-fly'];
         const tr = document.createElement('tr');
         tr.innerHTML = `<td onclick="event.stopPropagation()"><input type="checkbox"></td>
-     <td><span class="src ${sc}">${si} ${sn}</span></td>
+     <td><span class="src ${sc}">${sn}</span></td>
      <td><span class="bill">${o.ref}</span></td>
      <td>${o.bill ? `<span class="bill">${o.bill}</span>` : '<span class="muted">—</span>'}</td>
      <td><div class="cnee">${o.cnee}</div><div class="subcell">${FLAGS[o.ct] || ''} ${o.ct}</div></td>
      <td>${o.items} SP</td>
      <td>${o.kg ? o.kg + ' kg' : '<span style="color:var(--amber)">chờ cân</span>'}</td>
-     <td><span class="badge ${ec}">${ei} ${en}</span></td>
+     <td><span class="badge ${ec}">${en}</span></td>
      <td>${o.note ? '<span class="muted">' + o.note + '</span>' : '<span class="muted">—</span>'}</td>
      <td class="actions">
-       ${o.st === 'exception' ? `<button class="btn ghost sm" onclick="toast('Thử tạo lại đơn ${o.ref} (demo)')">↻ Thử lại</button>` : `<button class="act" title="In nhãn A6/A4/ZPL" onclick="toast('In nhãn đơn ${o.ref} (demo)')">🖨</button>`}
-       <button class="act" title="Xem chi tiết" onclick="toast('Xem chi tiết đơn ${o.ref} (demo)')">👁</button></td>`;
+       ${o.st === 'exception' ? `<button class="btn ghost sm" onclick="toast('Thử tạo lại đơn ${o.ref} (demo)')">Thử lại</button>` : `<button class="act" title="In nhãn A6/A4/ZPL" onclick="toast('In nhãn đơn ${o.ref} (demo)')">${IC.print}</button>`}
+       <button class="act" title="Xem chi tiết" onclick="toast('Xem chi tiết đơn ${o.ref} (demo)')">${IC.eye}</button></td>`;
         b.appendChild(tr);
     });
     const count = document.getElementById('ecomCount');
@@ -1272,16 +1365,13 @@ function copyText(t) {
 function openPicker(m) {
     pickMode = m;
     const M = {
-        sender: ['👤', 'Chọn hồ sơ người gửi'],
-        receiver: ['📇', 'Sổ địa chỉ người nhận'],
-        product: ['📚', 'Thư viện mặt hàng']
+        sender: ['', 'Chọn hồ sơ người gửi'],
+        receiver: ['', 'Sổ địa chỉ người nhận'],
+        product: ['', 'Thư viện mặt hàng']
     };
-    const icon = document.getElementById('mIcon');
     const title = document.getElementById('mTitle');
     const search = document.getElementById('mSearch');
     const modal = document.getElementById('modal');
-    if (icon && M[m])
-        icon.textContent = M[m][0];
     if (title && M[m])
         title.textContent = M[m][1];
     if (search)
@@ -1330,15 +1420,15 @@ function renderPicker() {
         PRODUCTS.forEach(p => {
             if (!(p.vi + p.en).toLowerCase().includes(q))
                 return;
-            L.appendChild(mkPick('📦', p.vi + ' / ' + p.en, 'HS ' + p.hs + ' · ' + p.origin + ' · ' + p.unit, () => choosePick(p)));
+            L.appendChild(mkPick(p.vi.slice(0, 2).toUpperCase(), p.vi + ' / ' + p.en, 'HS ' + p.hs + ' · ' + p.origin + ' · ' + p.unit, () => choosePick(p)));
         });
     }
     if (pickMode === 'receiver') {
         RECEIVERS.forEach((s, idx) => {
             if (!(s.n + s.ct + s.contact).toLowerCase().includes(q))
                 return;
-            const acts = `<button data-act class="act" title="Sửa" onclick="editReceiver(${idx})">✎</button><button data-act class="act" title="Xóa" onclick="deleteReceiver(${idx})" style="color:var(--red)">🗑</button>`;
-            L.appendChild(mkPick(FLAGS[s.ct] || '📦', s.n, (FLAGS[s.ct] || '') + ' ' + s.ct + ' · ' + s.contact + ' · ' + s.tel, () => choosePick(s), acts));
+            const acts = `<button data-act class="act" title="Sửa" onclick="editReceiver(${idx})">${IC.edit}</button><button data-act class="act" title="Xóa" onclick="deleteReceiver(${idx})" style="color:var(--red)">${IC.trash}</button>`;
+            L.appendChild(mkPick(FLAGS[s.ct] || s.n.slice(0, 2).toUpperCase(), s.n, s.ct + ' · ' + s.contact + ' · ' + s.tel, () => choosePick(s), acts));
         });
     }
     if (!L.children.length)
@@ -1390,12 +1480,12 @@ function getReceiver() {
 function setRcvLbl() {
     const el = document.getElementById('saveRcvLbl');
     if (el)
-        el.textContent = rcvEditIdx != null ? '💾 Cập nhật địa chỉ đã lưu' : '💾 Lưu vào sổ địa chỉ';
+        el.textContent = rcvEditIdx != null ? 'Cập nhật địa chỉ đã lưu' : 'Lưu vào sổ địa chỉ';
 }
 function saveReceiver() {
     const r = getReceiver();
     if (!r.n || !r.contact) {
-        toast('⚠️ Cần có tên công ty & người liên hệ để lưu');
+        toast('Cần có tên công ty & người liên hệ để lưu');
         return;
     }
     if (rcvEditIdx != null) {
@@ -1474,7 +1564,7 @@ function renderAddonChips() {
     selAddons.forEach(s => {
         const c = document.createElement('span');
         c.className = 'addon-chip';
-        c.innerHTML = `✓ ${s} <button type="button" onclick="rmAddon('${s.replace(/'/g, "\\'")}')">✕</button>`;
+        c.innerHTML = `${s} <button type="button" onclick="rmAddon('${s.replace(/'/g, "\\'")}')">✕</button>`;
         w.appendChild(c);
     });
 }
@@ -1482,29 +1572,70 @@ function rmAddon(s) {
     selAddons = selAddons.filter(x => x !== s);
     renderAddonChips();
 }
+// Chi nhánh gửi: ô chọn (thay hàng chip)
 function renderBranchChips() {
-    const w = document.getElementById('branchChips');
-    if (!w)
+    const sel = document.getElementById('branchSel');
+    if (!sel)
         return;
-    w.innerHTML = '';
-    const mk = (key, label, n, on) => {
-        const b = document.createElement('button');
-        b.className = 'chip' + (on ? ' on' : '');
-        b.innerHTML = `${label} <span class="cc">${n}</span>`;
-        b.onclick = () => {
-            branchFilter = key;
-            curPage = 1;
-            renderBranchChips();
-            renderOrders();
-        };
-        w.appendChild(b);
-    };
-    mk('all', 'Tất cả', ORDERS.length, branchFilter === 'all');
-    BRANCHES.forEach(br => {
-        const n = ORDERS.filter(o => o.branch === br).length;
-        if (n)
-            mk(br, br, n, branchFilter === br);
-    });
+    const opts = [['all', 'Tất cả chi nhánh (' + ORDERS.length + ')']]
+        .concat(BRANCHES.filter(br => ORDERS.some(o => o.branch === br)).map(br => [br, br + ' (' + ORDERS.filter(o => o.branch === br).length + ')']));
+    sel.innerHTML = opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+    sel.value = branchFilter;
+}
+function setBranch(v) {
+    branchFilter = v || 'all';
+    curPage = 1;
+    renderOrders();
+}
+function setStatusTab(f) {
+    filter = f || 'all';
+    document.querySelectorAll('#chips [data-f]').forEach(x => x.classList.toggle('on', x.dataset.f === filter));
+    curPage = 1;
+    renderOrders();
+}
+// POD dự kiến = ngày gửi + thời gian vận chuyển tham khảo theo dịch vụ
+const TRANSIT_DAYS = { DHL: 3, Fedex: 3, UPS: 4, Aramex: 4, 'Chuyên tuyến': 5, Ecom: 7, SEA: 25 };
+function estPod(o) {
+    if (o.pod || !o.sent)
+        return '';
+    const t = dParse(o.sent);
+    if (!t)
+        return '';
+    const key = Object.keys(TRANSIT_DAYS).find(k => (o.route || '').startsWith(k));
+    const d = new Date(t + (key ? TRANSIT_DAYS[key] : 5) * 86400000);
+    const p = (x) => String(x).padStart(2, '0');
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
+}
+function parsePcs(pcs) {
+    const m = (pcs || '').match(/^\s*(\d+)/);
+    return m ? +m[1] : 0;
+}
+function openRowMenu(ev, bill) {
+    ev.stopPropagation();
+    closePmenu();
+    const m = document.getElementById('omenu');
+    if (!m)
+        return;
+    const r = ev.currentTarget.getBoundingClientRect();
+    m.style.left = Math.min(r.left, window.innerWidth - 200) + 'px';
+    m.style.top = (r.bottom + 4) + 'px';
+    m.dataset.bill = bill;
+    m.classList.add('show');
+}
+function rowDo(act) {
+    const bill = document.getElementById('omenu')?.dataset.bill || '';
+    closePmenu();
+    if (act === 'detail')
+        openDrawerBill(bill);
+    if (act === 'photos')
+        openPhotos(bill);
+    if (act === 'clone')
+        toast('Đã mở đơn mới theo mẫu đơn ' + bill + ' (demo)');
+    if (act === 'trouble')
+        openTrouble(bill);
+}
+function copyTrack(kind, bill) {
+    copyText('https://vietanexpress.com.vn/track?id=' + bill + (kind === 'your' ? '&brand=1' : ''));
 }
 function sortOrders(f) {
     if (sortState.field === f)
@@ -1521,6 +1652,7 @@ function sortVal(o, f) {
         case 'st': return STRANK[o.st] || 0;
         case 'created':
         case 'sent': return dParse(o[f]);
+        case 'bill': return +o.bill || 0;
         case 'pod': return o.pod ? dParse(o.pod.date + ' ' + o.pod.time) : 0;
         case 'seq': return o.seq;
         default: return (o[f] || '').toString().toLowerCase();
@@ -1560,11 +1692,11 @@ function clearFilters() {
     const typeFilter = document.getElementById('typeFilter');
     if (typeFilter)
         typeFilter.value = '';
-    filter = 'all';
+    const searchBy = document.getElementById('searchBy');
+    if (searchBy)
+        searchBy.value = 'all';
     branchFilter = 'all';
-    curPage = 1;
-    document.querySelectorAll('#chips .chip').forEach((c, i) => c.classList.toggle('on', i === 0));
-    renderOrders();
+    setStatusTab('all');
     toast('Đã xóa bộ lọc');
 }
 function renderPager(total) {
@@ -1587,20 +1719,29 @@ function goPage(n) {
     renderOrders();
 }
 function renderOrders() {
-    const q = (document.getElementById('orderSearch')?.value || '').toLowerCase();
+    const q = (document.getElementById('orderSearch')?.value || '').trim().toLowerCase();
+    const by = document.getElementById('searchBy')?.value || 'all';
     const tf = document.getElementById('typeFilter')?.value;
     const fd = document.getElementById('fFrom')?.value;
     const td = document.getElementById('fTo')?.value;
     const wf = parseFloat(document.getElementById('fWFrom')?.value);
     const wt = parseFloat(document.getElementById('fWTo')?.value);
-    let rows = ORDERS.filter(o => (filter === 'all' || o.st === filter) &&
-        (branchFilter === 'all' || o.branch === branchFilter) &&
+    const hay = (o) => by === 'all' ? (o.cnee + ' ' + o.ct + ' ' + o.bill + ' ' + o.content + ' ' + o.ref + ' ' + o.connect) : String(o[by] || '');
+    // mọi điều kiện trừ trạng thái → dùng cho số đếm trên tab
+    const base = ORDERS.filter(o => (branchFilter === 'all' || o.branch === branchFilter) &&
         (!tf || o.type === tf) &&
-        (o.cnee + o.ct + o.bill + o.content + o.ref + o.branch + o.connect).toLowerCase().includes(q) &&
+        (!q || hay(o).toLowerCase().includes(q)) &&
         (!fd || dOnly(o.created) >= fd) &&
         (!td || dOnly(o.created) <= td) &&
         (isNaN(wf) || parseKg(o.pcs) >= wf) &&
         (isNaN(wt) || parseKg(o.pcs) <= wt));
+    document.querySelectorAll('#chips [data-f]').forEach(t => {
+        const k = t.dataset.f || 'all';
+        const cc = t.querySelector('.cc');
+        if (cc)
+            cc.textContent = String(k === 'all' ? base.length : base.filter(o => o.st === k).length);
+    });
+    let rows = base.filter(o => filter === 'all' || o.st === filter);
     const f = sortState.field, dir = sortState.dir === 'asc' ? 1 : -1;
     rows.sort((a, b) => {
         const va = sortVal(a, f), vb = sortVal(b, f);
@@ -1608,42 +1749,52 @@ function renderOrders() {
     });
     document.querySelectorAll('#v-orders .cast').forEach(c => {
         c.classList.toggle('on', c.dataset.sf === f);
-        c.textContent = c.dataset.sf === f ? (sortState.dir === 'asc' ? '▲' : '▼') : '▲▼';
+        c.textContent = c.dataset.sf === f ? (sortState.dir === 'asc' ? '▲' : '▼') : '';
     });
+    // tổng hợp theo kết quả lọc (như bản cũ: Total Pcs / Total Weight / Total result)
+    const sumPcs = rows.reduce((a, o) => a + parsePcs(o.pcs), 0);
+    const sumKg = rows.reduce((a, o) => a + parseKg(o.pcs), 0);
+    const setT = (id, v) => { const e = document.getElementById(id); if (e)
+        e.textContent = v; };
+    setT('sumPcs', String(sumPcs));
+    setT('sumKg', (Math.round(sumKg * 10) / 10).toLocaleString('vi-VN'));
+    setT('sumRows', String(rows.length));
     const total = rows.length, pages = Math.max(1, Math.ceil(total / pageSize));
     if (curPage > pages)
         curPage = pages;
-    rows = rows.slice((curPage - 1) * pageSize, curPage * pageSize);
+    const offset = (curPage - 1) * pageSize;
+    rows = rows.slice(offset, curPage * pageSize);
     const b = document.getElementById('orderBody');
     const cards = document.getElementById('orderCards');
     if (b)
         b.innerHTML = '';
     if (cards)
         cards.innerHTML = '';
-    rows.forEach(o => {
-        const [ic, itx, icol] = SICON[o.st] || ['📦', 'Chưa rõ', 'var(--muted)'];
+    rows.forEach((o, i) => {
+        const [, itx, icol] = SICON[o.st] || ['', 'Chưa rõ', 'var(--muted)'];
+        const est = estPod(o);
         const tr = document.createElement('tr');
         tr.onclick = e => {
-            if (e.target.closest('button,input,a'))
+            if (e.target.closest('button,input,a,select'))
                 return;
             openDrawer(o);
         };
-        tr.innerHTML = `<td onclick="event.stopPropagation()"><input type="checkbox"></td>
-     <td><div class="stcell" title="${itx}"><span class="stico">${ic}</span><span class="stlbl" style="color:${icol}">${itx}</span></div></td>
-     <td><span class="bill">${o.bill}</span></td>
-     <td>${o.ref ? `<span class="bill">${o.ref}</span>` : '<span class="muted">—</span>'}</td>
-     <td><div class="cnee">${o.cnee}</div><div class="subcell">${o.ct}</div></td>
-     <td>${o.connect ? `<div class="connbill" title="Bill dịch vụ last-mile">${o.connect}</div>` : '<div class="connbill" style="opacity:.4">—</div>'}<div class="route">${o.route}</div></td>
-     <td class="tnum"><div>${o.created}</div><div class="subcell">${o.sent ? 'Gửi: ' + o.sent : '<span style="color:var(--amber)">Chưa gửi</span>'}</div></td>
-     <td>${o.pod ? `<div class="pod-cell"><b>${o.pod.date}</b> ${o.pod.time}<div class="subcell">Ký: ${o.pod.signer}</div></div>` : '<span class="muted">—</span>'}</td>
-     <td><span class="branch-chip">🏢 ${o.branch}</span></td>
-     <td><button class="va-track" onclick="toast('VA Track: ${o.bill}')">VA Track</button><div><button class="ytrack" onclick="toast('Your Track (thương hiệu đại lý): ${o.bill}')">🏷 Your Track</button></div></td>
-     <td><div>${o.content}</div><div class="pcs">${o.pcs}</div></td>
-     <td><button class="photo-btn" onclick="openPhotos('${o.bill}')">🖼 Xem${o.photos ? ' (' + o.photos + ')' : ''}</button></td>
-     <td class="actions" onclick="event.stopPropagation()">
-       <button class="print-btn" onclick="openPrintMenu(event,'${o.bill}')">🖨 Print ▾</button>
-       <button class="act" title="Nhân bản đơn" onclick="toast('Tạo đơn giống đơn này (demo)')">⧉</button>
-       <button class="act" title="Báo cáo sự cố tới CS Việt An" onclick="openTrouble('${o.bill}')" style="color:var(--red);border-color:color-mix(in srgb,var(--red) 35%,var(--line-2))">⚠</button>
+        tr.innerHTML = `<td class="c-chk" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Chọn đơn ${o.bill}"></td>
+     <td class="c-no">${offset + i + 1}</td>
+     <td>${o.ref ? `<span class="mono">${o.ref}</span>` : '<span class="nil">—</span>'}</td>
+     <td><div class="mono strong">${o.bill}</div><span class="st-pill sm" style="--c:${icol}">${itx}</span></td>
+     <td class="c-cnee"><div class="cnee">${o.cnee}</div></td>
+     <td><div>${o.ct}</div><div class="route">${o.route}</div></td>
+     <td>${o.sent ? `<div class="tnum">${o.sent}</div>` : '<span class="nil">Chưa gửi</span>'}${o.connect ? `<div class="connbill" title="Mã tracking hãng / last-mile">${o.connect}</div>` : ''}</td>
+     <td>${o.pod ? `<div class="tnum">${o.pod.date} ${o.pod.time}</div><div class="subcell">Ký: ${o.pod.signer}</div>` : est ? `<div class="subcell">Dự kiến</div><div class="tnum">${est}</div>` : '<span class="nil">—</span>'}</td>
+     <td><div class="trk">
+       <div class="trk-i"><button class="tlink" onclick="toast('VA Track: ${o.bill}')">VA Track</button><button class="icopy" title="Sao chép link VA Track" onclick="copyTrack('va','${o.bill}')">${IC.copy}</button></div>
+       <div class="trk-i"><button class="tlink" onclick="toast('Your Track (thương hiệu đại lý): ${o.bill}')">Your Track</button><button class="icopy" title="Sao chép link Your Track" onclick="copyTrack('your','${o.bill}')">${IC.copy}</button></div>
+     </div></td>
+     <td><div class="tnum">${o.created.split(' ')[0]}</div><div class="subcell">${o.pcs}</div><div class="content">${o.content}</div></td>
+     <td class="actions c-act" onclick="event.stopPropagation()">
+       <button class="print-btn" onclick="openPrintMenu(event,'${o.bill}')">In ▾</button>
+       <button class="act row-more" title="Thao tác khác" onclick="openRowMenu(event,'${o.bill}')">${IC.more}</button>
      </td>`;
         if (b)
             b.appendChild(tr);
@@ -1655,13 +1806,16 @@ function renderOrders() {
                     return;
                 openDrawer(o);
             };
-            card.innerHTML = `<div class="oc-top"><span class="stico" title="${itx}">${ic}</span>
-         <div><span class="bill">${o.bill}</span><div class="stlbl" style="color:${icol}">${itx}</div></div>
-         <button class="btn ghost sm oc-detail" onclick="openDrawerBill('${o.bill}')">Xem chi tiết ›</button></div>
-         <div class="oc-name">📥 ${o.cnee}</div>`;
+            card.innerHTML = `<div class="oc-top">
+         <div><span class="mono strong">${o.bill}</span> <span class="st-pill sm" style="--c:${icol}">${itx}</span></div>
+         <button class="btn ghost sm oc-detail" onclick="openDrawerBill('${o.bill}')">Chi tiết</button></div>
+         <div class="oc-name">${o.cnee}</div>
+         <div class="subcell">${o.ct} · ${o.route} · ${o.pcs}</div>`;
             cards.appendChild(card);
         }
     });
+    if (!rows.length && b)
+        b.innerHTML = '<tr><td colspan="11" class="empty-row">Không có đơn nào khớp bộ lọc.</td></tr>';
     const orderCount = document.getElementById('orderCount');
     if (orderCount)
         orderCount.textContent = total + ' đơn hàng';
@@ -1694,7 +1848,7 @@ function openPhotos(bill) {
         }
         else {
             const wt = (o.pcs || '').split('·')[1] || '';
-            g.innerHTML = Array.from({ length: n }, (_, i) => `<div class="photo-card"><img src="${genPhoto(i, ('Kiện ' + (i + 1) + (wt ? ' ·' + wt : '')))}" alt="Ảnh kiện ${i + 1}"><div class="pcap">📷 Kiện ${i + 1}/${n} · chụp tại kho ${o.branch || ''}</div></div>`).join('');
+            g.innerHTML = Array.from({ length: n }, (_, i) => `<div class="photo-card"><img src="${genPhoto(i, ('Kiện ' + (i + 1) + (wt ? ' ·' + wt : '')))}" alt="Ảnh kiện ${i + 1}"><div class="pcap">Kiện ${i + 1}/${n} · chụp tại kho ${o.branch || ''}</div></div>`).join('');
         }
     }
     const m = document.getElementById('photoModal');
@@ -1715,18 +1869,23 @@ function openPrintMenu(ev, bill) {
     m.style.left = Math.min(r.left, window.innerWidth - 192) + 'px';
     m.style.top = (r.bottom + 4) + 'px';
     m.dataset.bill = bill;
+    document.getElementById('omenu')?.classList.remove('show');
     m.classList.add('show');
 }
 function closePmenu() {
-    const m = document.getElementById('pmenu');
-    if (m)
-        m.classList.remove('show');
+    ['pmenu', 'omenu'].forEach(id => document.getElementById(id)?.classList.remove('show'));
+}
+function toggleHelp(ev) {
+    ev.stopPropagation();
+    const h = document.getElementById('helpPop');
+    if (h)
+        h.hidden = !h.hidden;
 }
 function printDo(kind) {
     const m = document.getElementById('pmenu');
     const bill = m?.dataset.bill || '';
     closePmenu();
-    toast('🖨 ' + kind + ' — đơn ' + bill + ' (demo)');
+    toast('' + kind + ' — đơn ' + bill + ' (demo)');
 }
 function openDrawer(o) {
     const [cls, txt] = ST[o.st] || ['b-wait', 'Chưa đi'];
@@ -1742,20 +1901,19 @@ function openDrawer(o) {
         ['Phát thành công', o.st === 'ok' ? '09/09 15:20' : '—', o.st === 'ok']
     ];
     let cur = steps.filter(s => s[2]).length - 1;
-    const [ic] = SICON[o.st] || ['📦'];
     if (drBody) {
         drBody.innerHTML = `
-     <div class="dr-sec" style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">${ic}</span><span class="badge ${cls}">${txt}</span>${o.pod ? '' : `<span class="branch-chip" style="margin-left:auto">🏢 ${o.branch}</span>`}</div>
+     <div class="dr-sec" style="display:flex;align-items:center;gap:9px"><span class="badge ${cls}">${txt}</span>${o.pod ? '' : `<span class="branch-chip" style="margin-left:auto">${o.branch}</span>`}</div>
      <div class="dr-sec" style="display:flex;gap:7px;flex-wrap:wrap">
        <button class="va-track" onclick="toast('VA Track: ${o.bill}')">VA Track</button>
-       <button class="ytrack" onclick="toast('Your Track: ${o.bill}')">🏷 Your Track</button>
-       <button class="photo-btn" onclick="openPhotos('${o.bill}')">🖼 Xem ảnh${o.photos ? ' (' + o.photos + ')' : ''}</button></div>
+       <button class="ytrack" onclick="toast('Your Track: ${o.bill}')">Your Track</button>
+       <button class="photo-btn" onclick="openPhotos('${o.bill}')">Xem ảnh${o.photos ? ' (' + o.photos + ')' : ''}</button></div>
      <div class="dr-sec"><h4>Link tra cứu gửi khách</h4><div class="copy-link"><span class="cl">vietanexpress.com.vn/track?id=${o.bill}</span><button class="btn link" onclick="copyLink('${o.bill}')">Sao chép</button></div></div>
      <div class="dr-sec"><h4>Thông tin đơn</h4>
        <div class="kv"><span class="k">Người nhận</span><span class="v">${o.cnee}</span></div>
        <div class="kv"><span class="k">Nước đến</span><span class="v">${o.ct}</span></div>
        <div class="kv"><span class="k">REF</span><span class="v">${o.ref || '—'}</span></div>
-       <div class="kv"><span class="k">Chi nhánh gửi</span><span class="v">🏢 ${o.branch}</span></div>
+       <div class="kv"><span class="k">Chi nhánh gửi</span><span class="v">${o.branch}</span></div>
        <div class="kv"><span class="k">Dịch vụ</span><span class="v">${o.route}</span></div>
        <div class="kv"><span class="k">Connect bill</span><span class="v bill">${o.connect || '—'}</span></div>
        <div class="kv"><span class="k">Loại hàng</span><span class="v">${o.type}</span></div>
@@ -1766,9 +1924,9 @@ function openDrawer(o) {
        <div class="kv"><span class="k">POD (giao)</span><span class="v">${o.pod ? o.pod.date + ' ' + o.pod.time + ' · ' + o.pod.signer : '—'}</span></div></div>
      <div class="dr-sec"><h4>Hành trình đơn hàng</h4><div class="tl">${steps.map((s, i) => `<div class="tl-it ${s[2] ? (i === cur ? 'now' : 'done') : ''}"><div class="tt">${s[0]}</div><div class="td">${s[1]}</div></div>`).join('')}</div></div>
      <div class="dr-sec"><h4>In &amp; thao tác</h4><div style="display:flex;gap:7px;flex-wrap:wrap">
-       <button class="btn ghost sm" onclick="toast('In A4 (demo)')">🖨 Bill A4</button><button class="btn ghost sm" onclick="toast('In Invoice (demo)')">🧾 Invoice</button>
-       <button class="btn ghost sm" onclick="toast('Xuất CVCK (demo)')">📑 CVCK</button><button class="btn ghost sm" onclick="toast('In nhãn A6 (demo)')">🏷 Label A6</button>
-       <button class="btn ghost sm" onclick="closeDrawer();openTrouble('${o.bill}')" style="color:var(--red)">⚠ Báo sự cố</button></div></div>`;
+       <button class="btn ghost sm" onclick="toast('In A4 (demo)')">Bill A4</button><button class="btn ghost sm" onclick="toast('In Invoice (demo)')">Invoice</button>
+       <button class="btn ghost sm" onclick="toast('Xuất CVCK (demo)')">CVCK</button><button class="btn ghost sm" onclick="toast('In nhãn A6 (demo)')">Label A6</button>
+       <button class="btn ghost sm" onclick="closeDrawer();openTrouble('${o.bill}')" style="color:var(--red)">Báo sự cố</button></div></div>`;
     }
     const drawer = document.getElementById('drawer');
     const scrim = document.getElementById('scrim');
@@ -1800,6 +1958,7 @@ function updateNotiCount() {
             e.style.display = n ? '' : 'none';
         }
     });
+    updateNavSums();
 }
 function renderNoti() {
     const L = document.getElementById('notiList');
@@ -1809,9 +1968,9 @@ function renderNoti() {
     NOTIS.forEach(x => {
         const el = document.createElement('div');
         el.className = 'noti-item' + (x.unread ? ' unread' : '') + (x.imp ? ' imp' : '');
-        el.innerHTML = `<div class="nic">${x.imp ? '📢' : '🔔'}</div><div style="flex:1;min-width:0">
-      <div class="nt">${x.title} ${x.imp ? '<span class="tag-imp">QUAN TRỌNG</span>' : ''}</div>
-      <div class="nd">${x.body.split('\n')[0]}</div><div class="nmeta">🕑 ${x.date}</div></div>
+        el.innerHTML = `<div style="flex:1;min-width:0">
+      <div class="nt">${x.title} ${x.imp ? '<span class="tag-imp">Quan trọng</span>' : ''}</div>
+      <div class="nd">${x.body.split('\n')[0]}</div><div class="nmeta">${x.date}</div></div>
       ${x.unread ? '<span class="undot"></span>' : ''}`;
         el.onclick = () => openNoti(x.id);
         L.appendChild(el);
@@ -1829,7 +1988,7 @@ function openNoti(id) {
     if (drBill)
         drBill.textContent = x.title;
     if (drBody) {
-        drBody.innerHTML = `<div class="dr-sec"><div class="nmeta" style="margin-bottom:6px">${x.imp ? '<span class="tag-imp">QUAN TRỌNG</span> · ' : ''}🕑 ${x.date}</div>
+        drBody.innerHTML = `<div class="dr-sec"><div class="nmeta" style="margin-bottom:6px">${x.imp ? '<span class="tag-imp">Quan trọng</span> · ' : ''}${x.date}</div>
       <div style="font-size:13.5px;line-height:1.6;white-space:pre-line">${x.body}</div></div>`;
     }
     const drawer = document.getElementById('drawer');
@@ -1855,8 +2014,7 @@ function renderPickups() {
         const [cls, tx] = PKST[p.st] || ['b-wait', 'Chờ xác nhận'];
         const el = document.createElement('div');
         el.className = 'pk-item';
-        el.innerHTML = `<div style="width:34px;height:34px;border-radius:9px;background:var(--green-tint);color:var(--green-d);display:grid;place-items:center;font-size:16px">🚛</div>
-      <div style="flex:1"><div class="pkd">${p.date} · ${p.slot}</div><div class="pkm">${p.pcs} kiện dự kiến</div></div>
+        el.innerHTML = `<div style="flex:1"><div class="pkd">${p.date} · ${p.slot}</div><div class="pkm">${p.pcs} kiện dự kiến</div></div>
       <span class="badge ${cls}">${tx}</span>`;
         L.appendChild(el);
     });
@@ -1866,7 +2024,7 @@ function renderPickups() {
 function submitPickup() {
     if (!validate2('v-pickup'))
         return;
-    toast('🎉 Đã gửi yêu cầu pickup! Nhân viên sẽ liên hệ xác nhận.', 'good');
+    toast('Đã gửi yêu cầu pickup! Nhân viên sẽ liên hệ xác nhận.', 'good');
 }
 function validate2(viewId) {
     let ok = true, first = null;
@@ -1885,7 +2043,7 @@ function validate2(viewId) {
     if (!ok) {
         if (first)
             first.focus();
-        toast('⚠️ Còn ô bắt buộc chưa điền');
+        toast('Còn ô bắt buộc chưa điền');
     }
     return ok;
 }
@@ -1900,7 +2058,7 @@ function showPop() {
     catch (e) { }
     const popList = document.getElementById('popList');
     if (popList) {
-        popList.innerHTML = imp.map(x => `<div class="pop-noti"><h4>📢 ${x.title}</h4><p>${x.body.split('\n')[0]}</p><div class="pnd">🕑 ${x.date} · bấm "Xem tất cả" để đọc chi tiết</div></div>`).join('');
+        popList.innerHTML = imp.map(x => `<div class="pop-noti"><h4>${x.title}</h4><p>${x.body.split('\n')[0]}</p><div class="pnd">${x.date} · bấm "Xem tất cả" để đọc chi tiết</div></div>`).join('');
     }
     const modal = document.getElementById('popModal');
     if (modal)
@@ -1978,7 +2136,7 @@ function doPriceLookup() {
     const H = +document.getElementById('priceH')?.value || 0;
     const type = document.getElementById('priceType')?.value || 'PACK';
     if (!country || !gross) {
-        toast('⚠️ Nhập nước đến & cân nặng để tra cứu');
+        toast('Nhập nước đến & cân nặng để tra cứu');
         return;
     }
     priceRows = PRICE_SVCS.map(s => priceCalc(s, country, gross, D, W, H, type));
@@ -2072,13 +2230,13 @@ function renderRateTable(name) {
      <td>${r.gFrom !== '' && r.gFrom != null ? r.gFrom : '0'} – ${r.gTo !== '' && r.gTo != null ? r.gTo : '∞'} cm</td>
      <td class="tnum" style="color:var(--red)">${fmtV(r.fee || 0)}</td></tr>`).join('')) : '<tr><td colspan="4" class="muted">Chưa khai quy định phụ thu.</td></tr>';
     box.innerHTML = `<div class="epanel"><div class="epanel-b">
-   <div class="brow" style="margin-bottom:6px"><span class="src src-api">🚚 ${s.name}</span>${s.account ? `<span class="muted">Account: <b>${s.account}</b></span>` : ''}<span class="muted">FSC ${Math.round(s.fsc * 100)}% · VAT ${Math.round(s.vat * 100)}% · Dự kiến ${s.eta || '—'}</span></div>
+   <div class="brow" style="margin-bottom:6px"><span class="src src-api">${s.name}</span>${s.account ? `<span class="muted">Account: <b>${s.account}</b></span>` : ''}<span class="muted">FSC ${Math.round(s.fsc * 100)}% · VAT ${Math.round(s.vat * 100)}% · Dự kiến ${s.eta || '—'}</span></div>
    <div class="brow" style="margin-bottom:10px"><span class="badge b-ok">Hiệu lực: ${fmtDMY(s.effFrom)} → ${fmtDMY(s.effTo)}</span>
-     <button class="btn ghost sm" onclick="pmgrEdit('${s.id}');priceTab('manage')">✏️ Sửa bảng giá này</button></div>
+     <button class="btn ghost sm" onclick="pmgrEdit('${s.id}');priceTab('manage')">Sửa bảng giá này</button></div>
    <div style="font-weight:600;font-size:13px;margin-bottom:6px">Bảng giá — TỔNG cước theo Zone × mốc cân 0.5→70kg (VND)</div>
    <div class="tbl-wrap"><div class="tbl-scroll" style="max-height:360px;overflow:auto"><table class="orders" style="min-width:520px"><thead><tr><th>Cân (kg)</th>${s.zones.map((l) => '<th>' + l + '</th>').join('')}</tr></thead><tbody>${rows}${over}</tbody></table></div></div>
    <div class="brow" style="margin-top:10px;align-items:flex-start"><b style="color:var(--ink)">Zone theo nước:</b> ${zmap} <span class="muted">· nước khác → Z${s.dz}</span></div>
-   <div style="font-weight:600;font-size:13px;margin:14px 0 6px">📦 Bảng phụ thu quá khổ / quá tải</div>
+   <div style="font-weight:600;font-size:13px;margin:14px 0 6px">Bảng phụ thu quá khổ / quá tải</div>
    <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders" style="min-width:520px"><thead><tr><th>Cân nặng</th><th>Cạnh dài nhất</th><th>A=(R+C)×2+D</th><th>Phí charge</th></tr></thead><tbody>${surRows}</tbody></table></div></div>
    <p class="muted" style="font-size:12px;margin-top:10px">Kiện thỏa CẢ 3 khoảng (cân · cạnh dài · A) của 1 dòng → cộng phí charge dòng đó. Tổng = Cước + FSC + Phụ thu + VAT.</p>
    <div class="price-note">${PRICE_NOTE}</div></div></div>`;
@@ -2093,20 +2251,20 @@ function pmgrRender() {
         return `<div class="epanel" style="margin-bottom:10px"><div class="epanel-b">
      <div class="brow" style="align-items:flex-start;gap:10px;flex-wrap:wrap">
        <div style="flex:1;min-width:200px">
-         <div style="font-weight:700;font-size:15px">🚚 ${s.name} ${s.account ? `<span class="muted" style="font-weight:500;font-size:12.5px">· ${s.account}</span>` : ''}</div>
+         <div style="font-weight:700;font-size:15px">${s.name} ${s.account ? `<span class="muted" style="font-weight:500;font-size:12.5px">· ${s.account}</span>` : ''}</div>
          <div class="muted" style="font-size:12.5px;margin-top:3px">${s.zones.length} zone · ${nc} nước khai · ${(s.sur || []).length} dòng phụ thu · FSC ${Math.round(s.fsc * 100)}% · VAT ${Math.round(s.vat * 100)}%</div>
          <div style="margin-top:4px"><span class="badge b-ok">Hiệu lực ${fmtDMY(s.effFrom)} → ${fmtDMY(s.effTo)}</span></div>
        </div>
        <div class="brow" style="gap:6px">
-         <button class="btn ghost sm" onclick="rateSel='${s.name}';priceTab('tables')">👁 Xem</button>
-         <button class="btn ghost sm" onclick="pmgrEdit('${s.id}')">✏️ Sửa</button>
-         <button class="btn ghost sm" style="color:var(--red)" onclick="pmgrDel('${s.id}')">🗑 Xóa</button>
+         <button class="btn ghost sm" onclick="rateSel='${s.name}';priceTab('tables')">Xem</button>
+         <button class="btn ghost sm" onclick="pmgrEdit('${s.id}')">Sửa</button>
+         <button class="btn ghost sm" style="color:var(--red)" onclick="pmgrDel('${s.id}')">Xóa</button>
        </div></div></div></div>`;
     }).join('');
     el.innerHTML = `<div class="brow" style="margin-bottom:12px"><b style="color:var(--ink);font-size:15px">Danh sách dịch vụ &amp; bảng giá (${PRICE_SVCS.length})</b>
-     <button class="btn primary" style="margin-left:auto" onclick="pmgrNew()">➕ Thêm dịch vụ</button>
+     <button class="btn primary" style="margin-left:auto" onclick="pmgrNew()">Thêm dịch vụ</button>
      <button class="btn ghost sm" onclick="pmgrReset()">↺ Khôi phục demo</button></div>
-   ${cards || '<div class="stub"><div class="se">💰</div><h3>Chưa có dịch vụ</h3><p>Bấm "Thêm dịch vụ" để khai bảng giá.</p></div>'}`;
+   ${cards || '<div class="stub"><h3>Chưa có dịch vụ</h3><p>Bấm "Thêm dịch vụ" để khai bảng giá.</p></div>'}`;
 }
 function pmgrReset() {
     if (!confirm('Khôi phục 6 dịch vụ DEMO? Dữ liệu đã nhập sẽ bị thay thế.'))
@@ -2133,7 +2291,7 @@ function pmgrDel(id) {
         renderRateChips();
     }
     catch (e) { }
-    toast('🗑 Đã xóa ' + s.name);
+    toast('Đã xóa ' + s.name);
 }
 function pmgrNew() {
     ped = {
@@ -2170,7 +2328,7 @@ function pedOpen(isNew) {
     if (!box)
         return;
     box.hidden = false;
-    box.innerHTML = `<div class="brow" style="margin-bottom:10px"><b style="color:var(--ink);font-size:16px">${isNew ? '➕ Thêm dịch vụ' : '✏️ Sửa: ' + ped.name}</b>
+    box.innerHTML = `<div class="brow" style="margin-bottom:10px"><b style="color:var(--ink);font-size:16px">${isNew ? 'Thêm dịch vụ' : 'Sửa: ' + ped.name}</b>
      <button class="btn ghost sm" style="margin-left:auto" onclick="pedClose()">← Quay lại danh sách</button></div>
 
    <div class="epanel"><div class="epanel-b">
@@ -2202,11 +2360,11 @@ function pedOpen(isNew) {
     <div id="ped-zones"></div>
     <div style="font-weight:600;font-size:13px;margin:6px 0 4px">Bảng chia Zone theo nước</div>
     <div id="ped-countries"></div>
-    <button class="btn ghost sm" style="margin-top:6px" onclick="pedAddCountry()">➕ Thêm nước</button>
+    <button class="btn ghost sm" style="margin-top:6px" onclick="pedAddCountry()">Thêm nước</button>
 
     <div class="ped-sec"><span class="ped-no">4</span> Bảng giá — TỔNG cước theo mốc cân 0.5 → 70kg (VNĐ)</div>
     <div class="warn-box" style="background:var(--green-tint,#eef7f0);border:1px solid var(--line,#cbd5cf);border-radius:10px;padding:10px;margin-bottom:10px">
-      <div style="font-weight:600;font-size:12.5px;margin-bottom:6px">⚡ Điền nhanh (tùy chọn): nhập giá mốc 0.5kg + mức cộng mỗi 0.5kg cho từng zone → tạo cả thang, rồi chỉnh tay ô lẻ.</div>
+      <div style="font-weight:600;font-size:12.5px;margin-bottom:6px">Điền nhanh (tùy chọn): nhập giá mốc 0.5kg + mức cộng mỗi 0.5kg cho từng zone → tạo cả thang, rồi chỉnh tay ô lẻ.</div>
       <div id="ped-qf"></div>
       <button class="btn ghost sm" style="margin-top:6px" onclick="pedQuickFill()">Tạo thang giá</button>
     </div>
@@ -2217,10 +2375,10 @@ function pedOpen(isNew) {
     <div class="ped-sec"><span class="ped-no">5</span> Bảng phụ thu quá khổ / quá tải</div>
     <p class="muted" style="font-size:12px;margin:0 0 8px">Mỗi dòng = 1 quy định. Kiện thỏa CẢ 3 khoảng (cân nặng · cạnh dài · A) → cộng phí charge. Bỏ trống = không giới hạn (0 → ∞). <b>A = (Rộng + Cao) × 2 + Dài</b>.</p>
     <div id="ped-sur"></div>
-    <button class="btn ghost sm" style="margin-top:6px" onclick="pedAddSur()">➕ Thêm dòng phụ thu</button>
+    <button class="btn ghost sm" style="margin-top:6px" onclick="pedAddSur()">Thêm dòng phụ thu</button>
 
     <div class="brow" style="margin-top:16px;border-top:1px solid var(--line,#e5e5e5);padding-top:12px">
-      <button class="btn primary" onclick="pedSave()">💾 Lưu bảng giá</button>
+      <button class="btn primary" onclick="pedSave()">Lưu bảng giá</button>
       <button class="btn ghost" onclick="pedClose()">Hủy</button>
     </div>
    </div></div>`;
@@ -2355,7 +2513,7 @@ function pedQuickFill() {
     });
     pedRenderGrid();
     pedRenderOver();
-    toast('⚡ Đã tạo thang giá — chỉnh tay ô lẻ nếu cần');
+    toast('Đã tạo thang giá — chỉnh tay ô lẻ nếu cần');
 }
 function pedRenderGrid() {
     const zs = pedZ();
@@ -2407,7 +2565,7 @@ function pedRmSur(i) {
 }
 function pedSave() {
     if (!ped.name.trim()) {
-        toast('⚠️ Nhập Tên dịch vụ');
+        toast('Nhập Tên dịch vụ');
         return;
     }
     ped.sur = ped.sur.filter((r) => [r.wFrom, r.wTo, r.dFrom, r.dTo, r.gFrom, r.gTo, r.fee].some((v) => v !== '' && v != null));
@@ -2428,7 +2586,7 @@ function pedSave() {
         PRICE_SVCS.push(rec);
     savePrice();
     rateSel = rec.name;
-    toast('💾 Đã lưu bảng giá ' + rec.name);
+    toast('Đã lưu bảng giá ' + rec.name);
     pedClose();
 }
 function aiInit() {
@@ -2473,7 +2631,7 @@ function aiSetRcv(f, val, filled) {
 function aiUpdateFlag() {
     const el = document.getElementById('ai_flag');
     if (el)
-        el.textContent = FLAGS[(document.getElementById('ai_country') || {}).value] || '🏳️';
+        el.textContent = FLAGS[(document.getElementById('ai_country') || {}).value] || '';
 }
 function aiClearReceiver() {
     const paste = document.getElementById('ai_paste');
@@ -2495,7 +2653,7 @@ function aiPasteSample() {
 function aiParseReceiver() {
     const raw = (document.getElementById('ai_paste')?.value || '').trim();
     if (!raw) {
-        toast('⚠️ Dán thông tin người nhận vào ô rồi bấm AI phân tích');
+        toast('Dán thông tin người nhận vào ô rồi bấm AI phân tích');
         return;
     }
     ['country', 'company', 'contact', 'tel', 'email', 'tax', 'city', 'state', 'postal', 'addr1', 'addr2', 'addr3'].forEach(f => aiSetRcv(f, '', false));
@@ -2585,7 +2743,7 @@ function aiParseReceiver() {
         c.textContent = 'Độ tin cậy ~' + pct + '% · đã điền ' + set.length + ' ô';
         c.className = 'ai-conf' + (pct < 60 ? ' low' : '');
     }
-    toast('✨ AI đã tách ' + set.length + ' trường — kiểm tra ô tô xanh');
+    toast('AI đã tách ' + set.length + ' trường — kiểm tra ô tô xanh');
 }
 function aiAddSample(key) {
     const it = AI_ITEMS.find(x => x.key === key);
@@ -2617,7 +2775,7 @@ function aiRenderPhotos() {
         const it = (AI_ITEMS.find(x => x.key === p.key) || {});
         const d = document.createElement('div');
         d.className = 'ai-thumb';
-        d.innerHTML = `<div class="ph">${p.url ? `<img src="${p.url}" style="width:96px;height:72px;object-fit:cover">` : (p.emoji || '📦')}</div><div class="cap">${p.fname || it.label || ''}</div><button class="rmp" onclick="aiRmPhoto(${i})">✕</button>`;
+        d.innerHTML = `<div class="ph">${p.url ? `<img src="${p.url}" style="width:96px;height:72px;object-fit:cover">` : 'Ảnh'}</div><div class="cap">${p.fname || it.label || ''}</div><button class="rmp" onclick="aiRmPhoto(${i})">✕</button>`;
         w.appendChild(d);
     });
     const has = aiPhotos.length > 0, btn = document.getElementById('ai_recog');
@@ -2654,7 +2812,7 @@ function aiRecognize() {
             banner.hidden = false;
         if (btn)
             btn.disabled = false;
-        toast('✨ AI đã nhận diện xong — kiểm tra tên hàng & mã HS');
+        toast('AI đã nhận diện xong — kiểm tra tên hàng & mã HS');
         setTimeout(() => document.querySelectorAll('#ai_invBody tr.newrow').forEach(r => r.classList.remove('newrow')), 1200);
     }, 700);
 }
@@ -2669,7 +2827,7 @@ function aiInvRow(it) {
         <textarea rows="1" data-c="vi" placeholder="Tên hàng (VN)">${it.vi || ''}</textarea>
         <textarea rows="1" data-c="mnf" placeholder="Nhà sản xuất">${it.mnf || ''}</textarea>
         <textarea rows="1" data-c="mat" placeholder="Chất liệu">${it.mat || ''}</textarea>
-        <span class="ai-tag">✨ AI ${it.conf || 95}%</span>${it.warn ? ` <span class="badge b-wait" style="font-size:10.5px">${it.warn}</span>` : ''}</td>
+        <span class="ai-tag">AI ${it.conf || 95}%</span>${it.warn ? ` <span class="badge b-wait" style="font-size:10.5px">${it.warn}</span>` : ''}</td>
     <td><input data-c="origin" value="${it.origin || 'VN'}"></td>
     <td><select class="hs-pick" data-c="hs">${hsOpts}</select></td>
     <td><div class="qtywrap" style="display:flex;gap:4px"><input data-c="qty" type="number" value="${it.qty || 1}" oninput="aiCalc()" style="max-width:52px"><select data-c="unit"><option>PCS</option><option>SET</option><option>BOX</option><option>KG</option></select></div></td>
@@ -2808,6 +2966,13 @@ const exportsToWindow = {
     closePhotos,
     openPrintMenu,
     closePmenu,
+    syncQuickPieces,
+    setBranch,
+    setStatusTab,
+    openRowMenu,
+    rowDo,
+    copyTrack,
+    toggleHelp,
     printDo,
     openDrawer,
     closeDrawer,
@@ -2906,13 +3071,40 @@ function initDomEvents() {
         a.onclick = e => {
             e.preventDefault();
             const el = a;
+            if (el.dataset.view === 'create')
+                createMode = el.dataset.mode || createMode;
             nav(el.dataset.view || 'home');
             if (el.dataset.view === 'create')
-                setCreateMode(el.dataset.mode || createMode);
-            document.querySelectorAll('.nav a').forEach(x => x.classList.remove('on'));
-            el.classList.add('on');
+                setCreateMode(createMode);
         };
     });
+    let navState = {};
+    try {
+        navState = JSON.parse(localStorage.getItem('va_nav_sec') || '{}');
+    }
+    catch (e) { }
+    document.querySelectorAll('.nav-sec').forEach(sec => {
+        const saved = navState[sec.dataset.sec || ''];
+        if (typeof saved === 'boolean')
+            setNavSection(sec, saved, false);
+        const btn = sec.querySelector('.nav-parent');
+        if (btn)
+            btn.onclick = () => {
+                // Sidebar đang thu gọn chỉ còn icon → mở rộng lại để thấy mục con
+                const app = document.getElementById('app');
+                if (app?.classList.contains('collapsed') && !matchMedia('(max-width:1040px)').matches) {
+                    app.classList.remove('collapsed');
+                    try {
+                        localStorage.setItem('va_collapsed', '0');
+                    }
+                    catch (e) { }
+                    setNavSection(sec, true);
+                    return;
+                }
+                setNavSection(sec, !sec.classList.contains('open'));
+            };
+    });
+    syncNavActive();
     const menuToggle = document.getElementById('menuToggle');
     if (menuToggle) {
         menuToggle.onclick = () => {
@@ -2946,17 +3138,11 @@ function initDomEvents() {
             r.setAttribute('data-theme', dark ? 'light' : 'dark');
             const themeIc = document.getElementById('themeIc');
             if (themeIc)
-                themeIc.textContent = dark ? '🌙' : '☀️';
+                themeIc.innerHTML = dark ? ICON_MOON : ICON_SUN;
         };
     }
-    document.querySelectorAll('#chips .chip').forEach(c => {
-        c.onclick = () => {
-            document.querySelectorAll('#chips .chip').forEach(x => x.classList.remove('on'));
-            c.classList.add('on');
-            filter = c.dataset.f || 'all';
-            curPage = 1;
-            renderOrders();
-        };
+    document.querySelectorAll('#chips [data-f]').forEach(c => {
+        c.onclick = () => setStatusTab(c.dataset.f || 'all');
     });
     document.querySelectorAll('#stepRail .step').forEach(s => {
         s.onclick = () => {
@@ -2968,8 +3154,13 @@ function initDomEvents() {
     document.addEventListener('click', e => {
         if (!e.target.closest('#catDD'))
             closeCatMenu();
-        if (!e.target.closest('#pmenu,.print-btn'))
+        if (!e.target.closest('#pmenu,#omenu,.print-btn,.row-more'))
             closePmenu();
+        if (!e.target.closest('.help-wrap')) {
+            const h = document.getElementById('helpPop');
+            if (h)
+                h.hidden = true;
+        }
     });
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {

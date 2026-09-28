@@ -1,14 +1,21 @@
-name: CI
+name: CI-CD
 
 on:
   push:
     branches: ["main", "master"]
   pull_request:
     branches: ["main", "master"]
+  workflow_dispatch:          # cho phép bấm chạy tay trong tab Actions
 
 jobs:
+  # ---------- CI: cài, test, build ----------
   build-and-test:
     runs-on: ubuntu-latest
+
+    # Nếu package.json nằm trong thư mục con, bỏ comment 3 dòng dưới và sửa tên thư mục
+    # defaults:
+    #   run:
+    #     working-directory: ./ten-thu-muc
 
     steps:
       - name: Checkout source
@@ -19,15 +26,68 @@ jobs:
         with:
           node-version: 20
           cache: npm
-
-      - name: Go to repo folder
-        run: cd "$GITHUB_WORKSPACE"
+          # cache-dependency-path: ten-thu-muc/package-lock.json   # dùng khi có thư mục con
 
       - name: Install dependencies
-        run: cd "$GITHUB_WORKSPACE" && npm ci
+        run: npm ci
 
       - name: Run tests
-        run: cd "$GITHUB_WORKSPACE" && npm test
+        run: npm test
 
       - name: Build project
-        run: cd "$GITHUB_WORKSPACE" && npm run build
+        run: npm run build
+
+      # Đóng gói bản build để job deploy dùng lại (chỉ khi push, không chạy cho pull request)
+      - name: Package build output
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p release
+          cp -r dist release/dist
+          cp package.json package-lock.json release/
+
+      - name: Upload artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: release
+          retention-days: 7
+
+  # ---------- CD: đưa lên server ----------
+  deploy:
+    needs: build-and-test
+    # Chỉ deploy khi push vào main/master, và khi đã bật biến ENABLE_DEPLOY = true
+    if: >
+      github.event_name != 'pull_request' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
+      vars.ENABLE_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release
+          path: release
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "release/*"
+          target: ${{ vars.SERVER_PATH }}
+          strip_components: 1
+
+      - name: Install & restart on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd ${{ vars.SERVER_PATH }}
+            npm ci --omit=dev
+            pm2 restart app-name || pm2 start dist/main.js --name app-name

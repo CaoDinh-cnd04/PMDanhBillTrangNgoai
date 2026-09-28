@@ -9,6 +9,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
 
     steps:
       - name: Checkout source
@@ -21,10 +24,10 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: cd "$GITHUB_WORKSPACE" && npm ci
 
       - name: Run tests
-        run: npm test
+        run: cd "$GITHUB_WORKSPACE" && npm test
 
       - name: Build project
-        run: npm run build
+        run: cd "$GITHUB_WORKSPACE" && npm run build

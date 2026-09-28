@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Việt An Express — Cổng Quản Lý & Đánh Bill CPN Quốc Tế</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo">📦</div><div class="bt"><div class="bn">VIỆT AN</div><div class="bs">EXPRESS · Portal</div></div></div>
+    <nav class="nav">
+      <div class="grp">Làm việc</div>
+      <a data-view="home" title="Trang chủ"><span class="ic">🏠</span> <span class="lb">Trang chủ</span></a>
+      <a data-view="create" data-mode="wizard" class="on" title="Tạo đơn hàng (từng bước)"><span class="ic">➕</span> <span class="lb">Tạo đơn (từng bước)</span></a>
+      <a data-view="create" data-mode="quick" title="Tạo đơn 1 trang"><span class="ic">📃</span> <span class="lb">Tạo đơn 1 trang</span></a>
+      <a data-view="create-ai" title="Tạo đơn bằng AI (thử nghiệm)"><span class="ic">🤖</span> <span class="lb">Tạo đơn bằng AI</span> <span class="nbadge" style="background:var(--green)">Beta</span></a>
+      <a data-view="price" title="Giá & gợi ý chọn dịch vụ"><span class="ic">💰</span> <span class="lb">Giá &amp; gợi ý dịch vụ</span></a>
+      <a data-view="drafts" title="Đơn nháp & chưa in"><span class="ic">📝</span> <span class="lb">Đơn nháp &amp; chưa in</span> <span class="nbadge" id="navDrafts" style="background:var(--amber)">2</span></a>
+      <a data-view="orders" title="Đơn hàng của tôi"><span class="ic">📋</span> <span class="lb">Đơn hàng của tôi</span></a>
+      <a data-view="ecom" title="Kênh bán hàng (E-commerce)"><span class="ic">🛒</span> <span class="lb">Kênh bán hàng</span></a>
+      <a data-view="trouble" title="Quản lý sự cố"><span class="ic">🚩</span> <span class="lb">Quản lý sự cố</span> <span class="nbadge" id="navTrb" style="background:var(--red)">1</span></a>
+      <a data-view="pickup" title="Đặt lịch Pickup"><span class="ic">🚛</span> <span class="lb">Đặt lịch Pickup</span></a>
+      <a data-view="import" title="Tạo đơn từ Excel"><span class="ic">📄</span> <span class="lb">Tạo đơn từ Excel</span></a>
+      <a data-view="noti" title="Thông báo"><span class="ic">🔔</span> <span class="lb">Thông báo</span> <span class="nbadge" id="navNoti">2</span></a>
+      <div class="grp">Tài khoản</div>
+      <a data-view="help" title="Trợ giúp &amp; Góp ý"><span class="ic">💬</span> <span class="lb">Trợ giúp &amp; Góp ý</span></a>
+      <a data-view="api" title="API Tracking"><span class="ic">🔗</span> <span class="lb">API Tracking</span></a>
+      <a data-view="pass" title="Đổi mật khẩu"><span class="ic">🔒</span> <span class="lb">Đổi mật khẩu</span></a>
+    </nav>
+    <div class="side-help"><b>💡 Mẹo nhanh</b>Điền 3 bước, tự lưu nháp. Chọn lại người nhận &amp; mặt hàng đã lưu để khỏi gõ.</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+      <div class="crumb">Portal khách hàng · <b id="crumb">Tạo đơn hàng</b></div>
+      <div class="sp"></div>
+      <button class="tb-btn" id="themeBtn" title="Đổi giao diện sáng/tối"><span id="themeIc">🌙</span></button>
+      <button class="tb-btn" title="Thông báo" onclick="nav('noti')">🔔<span class="tbadge" id="bellBadge">2</span></button>
+      <div class="avatar" title="Công ty TNHH ABC">AB</div>
+    </div>
+
+    <!-- ============ CREATE ============ -->
+    <section class="view" id="v-create">
+      <div class="page-h"><h1>Tạo đơn hàng</h1><p id="createSub">3 bước · tự lưu nháp</p>
+        <div class="seg" id="modeSeg" style="margin-left:auto">
+          <label><input type="radio" name="cmode" value="wizard" checked onchange="setCreateMode('wizard')"><span>📋 Từng bước</span></label>
+          <label><input type="radio" name="cmode" value="quick" onchange="setCreateMode('quick')"><span>📃 1 trang</span></label>
+        </div></div>
+
+      <div class="stepbar" id="stepRail">
+        <div class="step active" data-step="1"><div class="num">1</div><div class="tx"><b>Người gửi &amp; nhận</b><span>Gửi từ đâu, cho ai</span></div></div>
+        <div class="step" data-step="2"><div class="num">2</div><div class="tx"><b>Dịch vụ &amp; kiện</b><span>Hãng, HUB, số kiện</span></div></div>
+        <div class="step" data-step="3"><div class="num">3</div><div class="tx"><b>Invoice &amp; phí</b><span>Khai hàng, shipping</span></div></div>
+      </div>
+
+      <form class="panel" id="wizForm" onsubmit="return false">
+          <!-- STEP 1 -->
+          <div class="wstep" data-step="1">
+            <div class="panel-h"><div class="pi">👥</div><div><h2>Người gửi &amp; người nhận</h2><p>Chọn nhanh từ hồ sơ / sổ địa chỉ hoặc điền mới.</p></div></div>
+            <div class="panel-b">
+              <div class="two-col">
+                <div class="block">
+                  <div class="block-h"><span class="bi">📤</span> Người gửi (Shipper)
+                    <button type="button" class="btn ghost sm" style="margin-left:auto;height:26px" onclick="openPicker('sender')">Đổi hồ sơ</button></div>
+                  <div class="block-b"><div class="grid g2">
+                    <div class="f req c2"><input class="ctrl" data-req name="s_company" placeholder="Tên công ty / người gửi" value="Công ty TNHH ABC"><span class="star">*</span></div>
+                    <div class="f req"><input class="ctrl" data-req name="s_contact" placeholder="Người liên hệ" value="Nguyễn Văn A"><span class="star">*</span></div>
+                    <div class="f req"><input class="ctrl" data-req name="s_tel" placeholder="Số điện thoại" value="0901 234 567"><span class="star">*</span></div>
+                    <div class="f req c2"><input class="ctrl" data-req data-limit name="s_addr" placeholder="Địa chỉ lấy hàng" value="14 Sầm Sơn, P. Tân Sơn Nhất, TP.HCM"><span class="star">*</span><span class="cnt" data-count="s_addr"></span></div>
+                    <div class="f"><input class="ctrl" name="s_tax" placeholder="Mã số thuế / CCCD"></div>
+                    <div class="f"><input class="ctrl" name="s_email" placeholder="Email" value="kho@abc.com.vn"></div>
+                  </div></div>
+                </div>
+                <div class="block">
+                  <div class="block-h"><span class="bi">📥</span> Người nhận (Receiver)
+                    <button type="button" class="btn primary sm" style="margin-left:auto;height:26px" onclick="openPicker('receiver')">📖 Sổ địa chỉ</button></div>
+                  <div class="block-b"><div class="grid g2">
+                    <div class="f req hasflag"><span class="flag" id="r_flag">🇸🇬</span><input class="ctrl" data-req name="r_country" list="countries" placeholder="Nước đến (country)" value="Singapore" oninput="updateFlag()"><span class="star">*</span>
+                      <datalist id="countries"><option value="Singapore"><option value="Malaysia"><option value="United States"><option value="Australia"><option value="Belgium"><option value="China"><option value="Mexico"><option value="Canada"><option value="Taiwan"><option value="United Arab Emirates"></datalist></div>
+                    <div class="f req"><input class="ctrl" data-req name="r_company" placeholder="Cty (company name)" value="LINEX CO. LTD"><span class="star">*</span></div>
+                    <div class="f req"><input class="ctrl" data-req name="r_contact" placeholder="Người LH (contact)" value="Mr. Lim"><span class="star">*</span></div>
+                    <div class="f req"><input class="ctrl" data-req name="r_tel" placeholder="ĐT (tel)" value="+65 8123 4567"><span class="star">*</span></div>
+                    <div class="f"><input class="ctrl" name="r_tax" placeholder="Tax ID"></div>
+                    <div class="f"><input class="ctrl" name="r_email" placeholder="Email"></div>
+                    <div class="f"><input class="ctrl" name="r_postal" placeholder="Postal code" value="238859"></div>
+                    <div class="f req"><input class="ctrl" data-req name="r_city" placeholder="Thành phố (city)" value="Singapore"><span class="star">*</span></div>
+                    <div class="f c2"><input class="ctrl" name="r_state" placeholder="Tỉnh / bang (State)"></div>
+                    <div class="f req c2"><input class="ctrl" data-req data-limit name="r_addr1" placeholder="Địa chỉ 1 (address 1)" value="1 Raffles Place, #20-01"><span class="star">*</span><span class="cnt" data-count="r_addr1"></span></div>
+                    <div class="f c2"><input class="ctrl" data-limit name="r_addr2" placeholder="Địa chỉ 2 (address 2)" value="Tower One"><span class="cnt" data-count="r_addr2"></span></div>
+                    <div class="f c2"><input class="ctrl" data-limit name="r_addr3" placeholder="Địa chỉ 3 (address 3)"><span class="cnt" data-count="r_addr3"></span></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap">
+                    <button type="button" class="btn ghost sm" onclick="saveReceiver()"><span id="saveRcvLbl">💾 Lưu vào sổ địa chỉ</span></button>
+                    <span class="hint">Lưu để lần sau chọn nhanh — hoặc bỏ qua nếu không cần.</span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-f" id="foot1"><span class="autosave"><span class="dot"></span> Đã tự lưu nháp</span>
+              <button type="button" class="btn primary" style="margin-left:auto" onclick="go(2)">Tiếp tục → Dịch vụ &amp; kiện</button></div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="wstep" data-step="2" hidden>
+            <div class="panel-h"><div class="pi">🚚</div><div><h2>Dịch vụ &amp; kiện hàng</h2><p>Chọn hãng, HUB và khai số kiện, bao bì, kích thước.</p></div></div>
+            <div class="panel-b">
+              <div class="grid g3">
+                <div class="f req"><select class="ctrl" data-req name="service" id="service" onchange="fillHubs()">
+                  <option value="">— Chọn dịch vụ —</option><option>Aramex</option><option>DHL</option><option>Fedex</option><option>UPS</option><option selected>Chuyên tuyến</option><option>Ủy quyền Việt An</option><option>Ecommerce</option><option>SEA</option></select><span class="star">*</span></div>
+                <div class="f req"><select class="ctrl" data-req name="hub" id="hub"></select><span class="star">*</span></div>
+                <div class="f req"><select class="ctrl" data-req name="branch"><option value="">Chi nhánh gửi hàng…</option><option selected>TP.HCM</option><option>Hà Nội</option><option>Huế</option><option>Bảo Lộc</option><option>Cần Thơ</option></select><span class="star">*</span></div>
+                <div class="f"><input class="ctrl" name="ref" placeholder="Số tham chiếu / REF (mã của bạn)"></div>
+              </div>
+
+              <div class="rowlab">
+                <span class="rl">Loại hàng <span style="color:var(--red)">*</span></span>
+                <div class="seg" id="typeSeg">
+                  <label><input type="radio" name="ptype" value="DOC" onchange="setType('DOC')"><span>📄 Chứng từ (DOC)</span></label>
+                  <label><input type="radio" name="ptype" value="PACK" checked onchange="setType('PACK')"><span>📦 Hàng hóa (PACK)</span></label>
+                </div>
+                <div id="packBrief" style="display:flex;gap:8px;align-items:center;flex:1;min-width:320px">
+                  <div class="catdd" id="catDD">
+                    <input type="hidden" id="briefCat" value="">
+                    <button type="button" class="ctrl catdd-btn" id="catBtn" onclick="toggleCatMenu(event)"><span id="catBtnLbl">— Chọn nhóm hàng hóa —</span><span class="cc-ar">▾</span></button>
+                    <div class="catdd-menu" id="catMenu" hidden><input class="catdd-search" id="catSearch" placeholder="🔍 Tìm nhóm…" oninput="renderCatMenu()"><div id="catMenuList"></div></div>
+                  </div>
+                  <div class="f req" style="flex:1;min-width:180px"><input class="ctrl" data-req name="brief" list="briefDL" placeholder="Mô tả sơ bộ mặt hàng chính (chọn nhóm rồi gõ để xem gợi ý)" value="Váy nữ (quần áo)"><datalist id="briefDL"></datalist><span class="star">*</span></div>
+                </div>
+                <div id="docBrief" style="flex:1;min-width:300px;display:flex;gap:8px;align-items:center" hidden>
+                  <div class="f req" style="flex:2"><input class="ctrl" data-req name="docContent" placeholder="Nội dung chứng từ (VD: Hợp đồng, hồ sơ…)"><span class="star">*</span></div>
+                  <div class="f req" style="flex:1"><input class="ctrl" data-req type="number" step="0.1" min="0" name="docWeight" placeholder="Cân nặng (kg)" oninput="checkDocWeight(this)"><span class="star">*</span></div>
+                  <span style="font-size:11px;color:var(--muted);white-space:nowrap">📄 1 kiện</span>
+                </div>
+              </div>
+              <div id="multiBox" hidden style="margin-top:14px">
+                <div class="section-title"><span class="st-ic">🧩</span> Bảng phân loại nhiều nhóm hàng <span class="st-count" id="multiCount">0 nhóm</span></div>
+                <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+                  <button type="button" class="chip-btn" onclick="openMultiPick()">＋ Thêm / sửa nhóm</button>
+                  <button type="button" class="chip-btn" onclick="toast('🖨 In bảng phân loại nhóm hàng — in RIÊNG để đính kèm bộ bill vật lý (demo)')">🖨 In bảng (đính kèm bill)</button>
+                </div>
+                <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders" style="min-width:420px">
+                  <thead><tr><th style="width:40px">#</th><th>Nhóm hàng hóa</th><th>Ghi chú</th><th style="width:44px"></th></tr></thead>
+                  <tbody id="multiBody"></tbody></table></div></div>
+                <p class="muted" style="font-size:11.5px;margin-top:6px">📎 Bảng này được <b>in riêng</b> để đính kèm bộ bill vật lý khi kiện gồm nhiều nhóm hàng.</p>
+              </div>
+              <div id="over2note" class="warn-box amber" hidden style="margin-top:12px">
+                <div class="warn-item"><span class="wi">⚠️</span><div><b>Tài liệu trên 2kg được xem là hàng hóa</b><div class="wd">Vui lòng khai báo Invoice đầy đủ và tính theo giá cước hàng hóa. Hệ thống đã tự chuyển sang <b>Hàng hóa (PACK)</b> để bạn tiếp tục khai báo.</div></div></div>
+              </div>
+
+              <div id="kienSection">
+                <div class="section-title"><span class="st-ic">📐</span> Chi tiết kiện hàng
+                  <span class="tip" tabindex="0" style="margin-left:5px">?<span class="bub">Bắt buộc: Số lượng &amp; Loại bao bì. Cân nặng &amp; kích thước có thể bỏ trống, khai sau. TL quy đổi = D×R×C ÷ 5000.</span></span>
+                  <span class="st-count" id="kienCount"></span></div>
+                <div class="kien">
+                  <div class="kien-row head"><div>SL <span class="rq">*</span></div><div>Loại bao bì <span class="rq">*</span></div><div>Dài</div><div>Rộng</div><div>Cao</div><div>Cân (kg)</div><div>Quy đổi</div><div></div></div>
+                  <div id="kienBody"></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;margin-top:8px;flex-wrap:wrap">
+                  <button type="button" class="chip-btn" onclick="addKien()">＋ Thêm kiện</button>
+                  <div class="kien-foot" style="border-radius:var(--r-sm);flex:1;justify-content:space-between">
+                    <div>Tổng kiện: <b id="totPcs">0</b></div><div>Cân thực: <b id="totGross">0</b>kg</div>
+                    <div>Quy đổi: <b id="totVol">0</b>kg</div><div>Tính cước: <b id="totCharge" style="color:var(--green)">0</b>kg</div>
+                  </div>
+                </div>
+                <div class="warn-box amber" id="kienWarn" hidden></div>
+              </div>
+
+              <div class="section-title"><span class="st-ic">➕</span> Dịch vụ cộng thêm theo yêu cầu
+                <span class="tip" tabindex="0" style="margin-left:5px">?<span class="bub">Dịch vụ tùy chọn kèm đơn, chọn nhiều loại. Danh sách sẽ lấy từ hệ thống (database) sau.</span></span></div>
+              <div class="addon-box">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <button type="button" class="btn ghost sm" onclick="openAddons()">＋ Chọn dịch vụ cộng thêm</button>
+                  <div id="addonEmpty" class="addon-empty"><span>🧩</span> Chưa chọn dịch vụ nào.</div>
+                  <div class="addon-chips" id="addonChips" style="flex:1"></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-f" id="foot2"><button type="button" class="btn ghost" onclick="go(1)">← Quay lại</button>
+              <span class="autosave"><span class="dot"></span> Đã tự lưu nháp</span>
+              <button type="button" class="btn primary" style="margin-left:auto" onclick="go(3)">Tiếp tục → Invoice &amp; phí</button></div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="wstep" data-step="3" hidden>
+            <div class="panel-h"><div class="pi">🧾</div><div><h2>Invoice &amp; phí</h2><p>Khai từng mặt hàng theo bảng. Ô mô tả gõ Enter để xuống dòng.</p></div></div>
+            <div class="panel-b">
+              <div class="note-limit"><span>ℹ️</span> Giới hạn ký tự các ô đang để tạm — sẽ cập nhật theo bảng số liệu bạn gửi sau.</div>
+              <div id="docNoInv" hidden><div class="addon-empty" style="padding:26px;justify-content:center;text-align:center;flex-direction:column;gap:7px">
+                <span style="font-size:28px">📄</span><div>Đơn <b>Chứng từ (DOC)</b> không cần khai invoice.</div>
+                <div class="muted">Chỉ cần khai Shipping fee bên dưới (nếu có).</div></div></div>
+
+              <div id="invSection">
+                <div class="inv-tools">
+                  <select class="ctrl" style="height:30px;width:auto;font-size:12px" name="expType"><option>Hình thức XK: Kinh doanh</option><option>Phi mậu dịch (biếu tặng)</option><option>Hàng mẫu</option></select>
+                  <select class="ctrl" style="height:30px;width:auto;font-size:12px" id="cur" onchange="calcInvoice()"><option value="USD">Tiền tệ: USD ($)</option><option value="EUR">EUR (€)</option><option value="VND">VND (₫)</option></select>
+                  <button type="button" class="chip-btn" onclick="toast('Mở lại hóa đơn cũ (demo)')">🕑 Invoice cũ</button>
+                  <button type="button" class="chip-btn" onclick="toast('Nhập từ Excel (demo)')">📊 Import Excel</button>
+                  <button type="button" class="chip-btn" onclick="toast('Tải file mẫu (demo)')">⬇ File mẫu</button>
+                  <button type="button" class="chip-btn" onclick="openPicker('product')">📚 Thư viện mặt hàng</button>
+                </div>
+                <div class="inv-scroll"><table class="inv"><thead><tr>
+                  <th class="num-c">#</th>
+                  <th class="desc-c">Mô tả hàng hóa <span class="rq">*</span> · Tên EN / VN / Nhà SX</th>
+                  <th class="co-c">Xuất xứ</th><th class="hs-c">Mã HS</th><th class="qty-c">SL <span class="rq">*</span> / ĐVT</th><th class="price-c">Đơn giá <span class="rq">*</span></th><th class="sub-c">Thành tiền</th><th class="del-c"></th>
+                </tr></thead><tbody id="invBody"></tbody></table></div>
+                <div style="display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap">
+                  <button type="button" class="btn ghost sm" style="border-style:dashed" onclick="addInv()">＋ Thêm thông tin mặt hàng</button>
+                  <div class="inv-total" style="flex:1;margin-top:0">
+                    <div><span style="font-size:11.5px;opacity:.85">Tổng giá trị Invoice · </span><span style="font-size:11.5px;opacity:.75" id="cumSummary">0 mặt hàng</span></div>
+                    <div class="lg"><span id="invTotal">0</span> <span class="cur" id="invCur">USD</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid g2" style="margin-top:12px">
+                <div class="f" style="display:flex;gap:7px"><input class="ctrl" type="number" step="0.01" name="shipfee" placeholder="Shipping fee (phí vận chuyển, nếu khai)"><span class="ctrl" style="width:70px;display:grid;place-items:center;background:var(--surface-2);color:var(--muted)" id="feeCur">USD</span></div>
+              </div>
+            </div>
+            <div class="panel-f" id="foot3"><button type="button" class="btn ghost" id="foot3back" onclick="go(2)">← Quay lại</button>
+              <button type="button" class="btn ghost" onclick="saveDraft()">💾 Lưu nháp</button>
+              <button type="button" class="btn primary" style="margin-left:auto" onclick="submitOrder()">✓ Tạo đơn hàng</button></div>
+          </div>
+        </form>
+
+        <!-- Đơn nháp & chưa in hiển thị dưới form (chế độ 1 trang) -->
+        <section id="quickDrafts" hidden style="margin-top:18px">
+          <div class="section-title" style="border:none;padding-top:0;margin-top:0"><span class="st-ic">📝</span> Đơn nháp &amp; chưa in
+            <span class="st-count">Bấm <b>In</b> để cấp mã bill &amp; chuyển sang Đơn hàng của tôi · <a href="#" onclick="nav('drafts');return false" style="font-weight:600">Mở tab đầy đủ ›</a></span></div>
+          <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders">
+            <thead><tr><th>Trạng thái</th><th>Người nhận</th><th>Nước đến</th><th>Dịch vụ</th><th>Kiện / cân</th><th>Nội dung</th><th>Tạo lúc</th><th>Thao tác</th></tr></thead>
+            <tbody class="draft-body" id="quickDraftBody"></tbody></table></div></div>
+        </section>
+    </section>
+
+    <!-- ============ DRAFTS ============ -->
+    <section class="view" id="v-drafts" hidden>
+      <div class="page-h"><h1>Đơn nháp &amp; chưa in</h1><p>Đơn đang làm dở hoặc đã xong nhưng chưa in. Bấm <b>In</b> để cấp mã bill &amp; chuyển sang Đơn hàng của tôi.</p>
+        <button class="btn primary sm" style="margin-left:auto" onclick="nav('create')">＋ Tạo đơn mới</button></div>
+      <div class="note-limit" style="margin-bottom:14px"><span>ℹ️</span> Đơn chỉ được cấp <b>mã bill Việt An</b> khi bấm <b>In</b>. Sau khi in, đơn bị khóa (không sửa) và chuyển sang "Đơn hàng của tôi".</div>
+      <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders">
+        <thead><tr><th>Trạng thái</th><th>Người nhận</th><th>Nước đến</th><th>Dịch vụ</th><th>Kiện / cân</th><th>Nội dung</th><th>Tạo lúc</th><th>Thao tác</th></tr></thead>
+        <tbody class="draft-body" id="draftBody"></tbody></table></div>
+        <div class="tbl-foot"><span id="draftCount">—</span></div>
+      </div>
+    </section>
+
+    <!-- ============ ORDERS ============ -->
+    <section class="view" id="v-orders" hidden>
+      <div class="page-h"><h1>Đơn hàng của tôi</h1><p>Theo dõi, in ấn &amp; tra cứu đơn đã tạo.</p>
+        <button class="btn primary sm" style="margin-left:auto" onclick="nav('create')">＋ Tạo đơn mới</button></div>
+      <div class="stats">
+        <div class="stat accent"><div class="sv tnum">139</div><div class="sl">Tổng đơn (30 ngày)</div><div class="si">📦</div></div>
+        <div class="stat"><div class="sv tnum">235</div><div class="sl">Tổng kiện hàng</div><div class="si">🧱</div></div>
+        <div class="stat"><div class="sv tnum">3.304<span style="font-size:14px">kg</span></div><div class="sl">Tổng khối lượng</div><div class="si">⚖️</div></div>
+        <div class="stat warn"><div class="sv tnum">3</div><div class="sl">Vượt ngày dự kiến</div><div class="si">⏰</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="chips" id="chips">
+          <button class="chip on" data-f="all">Tất cả <span class="cc">8</span></button>
+          <button class="chip" data-f="wait">🕒 Chưa đi <span class="cc">2</span></button>
+          <button class="chip" data-f="fly">✈️ Đã đi <span class="cc">2</span></button>
+          <button class="chip" data-f="nd">🚚 Chưa phát <span class="cc">1</span></button>
+          <button class="chip" data-f="ok">✅ Đã phát <span class="cc">2</span></button>
+          <button class="chip" data-f="late">⏰ Vượt ngày <span class="cc">1</span></button>
+        </div>
+        <div class="brow" style="margin-bottom:11px"><span style="font-weight:600;color:var(--ink)">🏢 Chi nhánh gửi:</span><div class="chips" id="branchChips" style="margin:0"></div></div>
+        <div class="tb-row">
+          <div class="search"><span class="si">🔍</span><input id="orderSearch" placeholder="Tìm theo người nhận, mã VA Bill, nước đến, REF…" oninput="applyFilter()"></div>
+          <select class="ctrl" style="width:auto;height:38px" id="typeFilter" onchange="applyFilter()"><option value="">Tất cả loại</option><option>DOC</option><option>PACK</option></select>
+          <button class="btn ghost sm" onclick="toast('In hàng loạt (demo)')">🖨 In nhiều bill</button>
+          <button class="btn ghost sm" onclick="toast('Xuất bảng kê (demo)')">⬇ Xuất bảng kê</button>
+        </div>
+        <div class="filters">
+          <div class="ff"><label>Từ ngày (tạo)</label><input type="date" id="fFrom" onchange="applyFilter()"></div>
+          <div class="ff"><label>Đến ngày</label><input type="date" id="fTo" onchange="applyFilter()"></div>
+          <div class="ff"><label>Cân từ (kg)</label><input type="number" id="fWFrom" min="0" step="0.1" placeholder="0" oninput="applyFilter()"></div>
+          <div class="ff"><label>Cân đến (kg)</label><input type="number" id="fWTo" min="0" step="0.1" placeholder="∞" oninput="applyFilter()"></div>
+          <div class="ff"><label>Số dòng / trang</label><select id="fPageSize" onchange="changePageSize()"><option>20</option><option>50</option><option>100</option></select></div>
+          <button class="btn ghost sm" style="height:36px" onclick="clearFilters()">✕ Xóa lọc</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders">
+        <thead><tr><th style="width:30px"><input type="checkbox" onclick="toggleAll(this)"></th>
+          <th class="sortable" onclick="sortOrders('st')">Trạng thái <span class="cast" data-sf="st"></span></th>
+          <th class="sortable" onclick="sortOrders('bill')">VA Bill <span class="cast" data-sf="bill"></span></th>
+          <th class="sortable" onclick="sortOrders('ref')">REF <span class="cast" data-sf="ref"></span></th>
+          <th class="sortable" onclick="sortOrders('cnee')">Người nhận <span class="cast" data-sf="cnee"></span></th>
+          <th class="sortable" onclick="sortOrders('route')">Dịch vụ <span class="cast" data-sf="route"></span></th>
+          <th class="sortable" onclick="sortOrders('created')">Ngày tạo / gửi <span class="cast" data-sf="created"></span></th>
+          <th class="sortable" onclick="sortOrders('pod')">POD <span class="cast" data-sf="pod"></span></th>
+          <th class="sortable" onclick="sortOrders('branch')">Chi nhánh <span class="cast" data-sf="branch"></span></th>
+          <th>Tracking</th><th>Hàng hóa</th><th>Ảnh</th><th>In / Thao tác</th></tr></thead>
+        <tbody id="orderBody"></tbody></table></div>
+        <div class="order-cards" id="orderCards"></div>
+        <div class="tbl-foot"><span id="orderCount">—</span><div id="pager" class="pager" style="margin-left:auto"></div></div>
+      </div>
+    </section>
+
+    <!-- ============ TROUBLE ============ -->
+    <section class="view" id="v-trouble" hidden>
+      <div class="page-h"><h1>Quản lý sự cố (Trouble)</h1><p>Theo dõi các yêu cầu hỗ trợ đã gửi tới CS Việt An &amp; nhắc khi cần.</p>
+        <button class="btn ghost sm" style="margin-left:auto" onclick="nav('orders')">Về Đơn hàng để báo sự cố mới</button></div>
+      <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders">
+        <thead><tr><th>Mã ticket</th><th>Mã vận đơn</th><th>Loại sự cố</th><th>Mức độ</th><th>Ngày gửi</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+        <tbody id="trbBody"></tbody></table></div>
+        <div class="tbl-foot"><span id="trbCount">—</span></div>
+      </div>
+    </section>
+
+    <!-- ============ PICKUP ============ -->
+    <section class="view" id="v-pickup" hidden>
+      <div class="page-h"><h1>Đặt lịch lấy hàng (Pickup)</h1><p>Đặt lịch để nhân viên tới lấy hàng tận nơi.</p>
+        <span class="demo-flag" style="margin-left:auto">● Giao diện tạm — chờ bản của bạn</span></div>
+      <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:start" class="pickup-grid">
+        <div class="panel">
+          <div class="panel-h"><div class="pi">🚛</div><div><h2>Yêu cầu lấy hàng mới</h2><p>Điền thông tin, nhân viên sẽ liên hệ xác nhận.</p></div></div>
+          <div class="panel-b"><div class="grid g2">
+            <div class="f req"><input class="ctrl" type="date" data-req name="pk_date"><span class="star">*</span></div>
+            <div class="f req"><select class="ctrl" data-req name="pk_slot"><option value="">Khung giờ lấy hàng…</option><option>09:00 – 12:00</option><option>13:00 – 17:00</option><option>17:00 – 19:00</option></select><span class="star">*</span></div>
+            <div class="f req c2"><input class="ctrl" data-req name="pk_addr" placeholder="Địa chỉ lấy hàng" value="14 Sầm Sơn, P. Tân Sơn Nhất, TP.HCM"><span class="star">*</span></div>
+            <div class="f req"><input class="ctrl" data-req name="pk_contact" placeholder="Người liên hệ" value="Nguyễn Văn A"><span class="star">*</span></div>
+            <div class="f req"><input class="ctrl" data-req name="pk_tel" placeholder="Số điện thoại" value="0901 234 567"><span class="star">*</span></div>
+            <div class="f"><input class="ctrl" type="number" name="pk_pcs" placeholder="Số kiện dự kiến"></div>
+            <div class="f"><input class="ctrl" type="number" name="pk_kg" placeholder="Tổng cân dự kiến (kg)"></div>
+            <div class="f c2"><textarea class="ctrl" name="pk_note" rows="2" placeholder="Ghi chú cho nhân viên (loại hàng, lưu ý…)"></textarea></div>
+          </div></div>
+          <div class="panel-f"><span class="autosave"><span class="dot"></span> Sẽ có email xác nhận lịch</span>
+            <button type="button" class="btn primary" style="margin-left:auto" onclick="submitPickup()">✓ Gửi yêu cầu pickup</button></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><div class="pi">📅</div><div><h2>Lịch pickup gần đây</h2><p>Trạng thái các yêu cầu đã đặt.</p></div></div>
+          <div class="panel-b" id="pkList" style="display:flex;flex-direction:column;gap:10px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NOTIFICATIONS ============ -->
+    <section class="view" id="v-noti" hidden>
+      <div class="page-h"><h1>Trung tâm thông báo</h1><p>Tổng hợp thông báo từ Việt An — bấm để đọc chi tiết.</p>
+        <button class="btn ghost sm" style="margin-left:auto" onclick="markAllRead()">✓ Đánh dấu đã đọc tất cả</button></div>
+      <div class="tbl-wrap"><div id="notiList"></div></div>
+    </section>
+
+    <!-- ============ E-COMMERCE ============ -->
+    <section class="view" id="v-ecom" hidden>
+      <div class="page-h"><h1>Kênh bán hàng (E-commerce)</h1><p>Đẩy đơn hàng loạt từ shop/sàn (TikTok Shop, Shopify, Shopee…) qua API, Excel hoặc đánh bill lẻ.</p>
+        <span class="demo-flag" style="margin-left:auto">● Dữ liệu mẫu</span></div>
+      <div class="etabs">
+        <button class="etab on" data-etab="ov" onclick="ecomTab('ov')">📊 Tổng quan</button>
+        <button class="etab" data-etab="push" onclick="ecomTab('push')">⬆️ Đẩy đơn</button>
+        <button class="etab" data-etab="list" onclick="ecomTab('list')">📦 Đơn e-com</button>
+        <button class="etab" data-etab="conn" onclick="ecomTab('conn')">🔌 Kết nối &amp; API</button>
+      </div>
+
+      <!-- TAB: Tổng quan -->
+      <div class="etab-p" data-etab="ov">
+        <div class="stats">
+          <div class="stat accent"><div class="sv tnum">128</div><div class="sl">Đơn đẩy hôm nay</div><div class="si">🛒</div></div>
+          <div class="stat"><div class="sv tnum">121</div><div class="sl">Tạo thành công</div><div class="si">✅</div></div>
+          <div class="stat warn"><div class="sv tnum">5</div><div class="sl">Lỗi cần xử lý</div><div class="si">⚠️</div></div>
+          <div class="stat"><div class="sv tnum">2</div><div class="sl">Chờ cân đo</div><div class="si">⚖️</div></div>
+        </div>
+        <div class="epanel"><div class="epanel-b">
+          <div class="brow" style="margin-bottom:12px"><b style="color:var(--ink)">Theo nguồn hôm nay:</b>
+            <span class="src src-tiktok">🎵 TikTok Shop · 74</span><span class="src src-shopify">🛍️ Shopify · 28</span>
+            <span class="src src-shopee">🧡 Shopee · 12</span><span class="src src-api">🔌 API · 9</span><span class="src src-excel">📄 Excel · 3</span><span class="src src-manual">✍️ Tay · 2</span></div>
+          <div class="muted" style="font-size:12.5px">💡 Đơn tạo qua API/Excel được <b>cấp mã bill Việt An ngay</b> và trả nhãn (A6/A4/ZPL). Đơn thiếu cân/kích thước sẽ ở trạng thái <b>“Chờ cân đo”</b> — kho VA cân xong sẽ cập nhật cước.</div>
+        </div></div>
+      </div>
+
+      <!-- TAB: Đẩy đơn -->
+      <div class="etab-p" data-etab="push" hidden>
+        <div class="seg" style="margin-bottom:14px">
+          <label><input type="radio" name="pushm" value="api" checked onchange="pushMethod('api')"><span>🔌 Qua API</span></label>
+          <label><input type="radio" name="pushm" value="excel" onchange="pushMethod('excel')"><span>📄 Upload Excel/CSV</span></label>
+          <label><input type="radio" name="pushm" value="manual" onchange="pushMethod('manual')"><span>✍️ Đánh bill lẻ</span></label>
+        </div>
+
+        <!-- API -->
+        <div id="pm-api"><div class="epanel"><div class="epanel-b">
+          <h3 style="font-size:15px;margin-bottom:4px">Đẩy đơn qua API</h3>
+          <p class="muted" style="font-size:12.5px;margin-bottom:14px">Dành cho shop có lập trình viên. Gọi API để tạo 1 đơn hoặc nhiều đơn (batch ≤100). Trả về mã bill + link nhãn.</p>
+          <div class="keyrow"><span class="kt" style="background:var(--green-tint);color:var(--green-d)">PRODUCTION</span><span class="kk" id="apiKeyProd">d5ca74464f70dfe6045cb13b29c9f391</span><button class="btn ghost sm" onclick="copyText('d5ca74464f70dfe6045cb13b29c9f391')">Sao chép</button></div>
+          <div style="margin:14px 0 6px;font-weight:600;font-size:13px">Ví dụ tạo đơn (cURL):</div>
+          <div class="code"><button class="cbtn" onclick="copyText(document.getElementById('curlEx').textContent)">Sao chép</button><span id="curlEx">curl -X POST https://api.vietanexpress.com.vn/v1/orders \
+  -H "Authorization: Bearer d5ca74464f70dfe6045cb13b29c9f391" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shopOrderRef": "TT-88213",
+    "source": "tiktok",
+    "service": "Chuyên tuyến", "hub": "Chuyên tuyến - Singapore", "branch": "TP.HCM",
+    "receiver": { "name":"Emma W.", "country":"Singapore", "city":"Singapore",
+                  "postal":"238859", "phone":"+65 8123 4567", "address1":"1 Raffles Place" },
+    "parcel": { "weightKg": 1.2, "lengthCm": 25, "widthCm": 18, "heightCm": 10 },
+    "items": [
+      { "sku":"DR-001", "nameEn":"Dress", "nameVi":"Váy", "hs":"6204.43", "origin":"VN", "qty":2, "unitPrice":8, "currency":"USD" }
+    ]
+  }'</span></div>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+            <button class="btn ghost sm" onclick="ecomTab('conn')">📄 Xem tài liệu API đầy đủ</button>
+            <button class="btn ghost sm" onclick="toast('Bật/tắt sandbox để test không tạo đơn thật (demo)')">🧪 Môi trường Sandbox</button></div>
+          <div style="margin:16px 0 8px;font-weight:600;font-size:13px">Log request gần đây</div>
+          <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders" style="min-width:640px">
+            <thead><tr><th>Thời gian</th><th>Endpoint</th><th>Kết quả</th><th>Mã đơn shop</th><th>VA Bill</th></tr></thead>
+            <tbody>
+              <tr><td class="muted tnum">10:41:22</td><td class="bill">POST /v1/orders/batch</td><td><span class="badge b-ok">200 · 40 đơn</span></td><td>—</td><td>—</td></tr>
+              <tr><td class="muted tnum">10:39:05</td><td class="bill">POST /v1/orders</td><td><span class="badge b-ok">201 OK</span></td><td class="bill">TT-88213</td><td class="bill">6156991</td></tr>
+              <tr><td class="muted tnum">10:36:51</td><td class="bill">POST /v1/orders</td><td><span class="badge b-late">422 · Thiếu HS</span></td><td class="bill">SP-3391</td><td>—</td></tr>
+            </tbody></table></div></div>
+        </div></div></div>
+
+        <!-- EXCEL -->
+        <div id="pm-excel" hidden><div class="epanel"><div class="epanel-b">
+          <h3 style="font-size:15px;margin-bottom:4px">Upload Excel / CSV</h3>
+          <p class="muted" style="font-size:12.5px;margin-bottom:14px">Không cần lập trình. Tải file mẫu → điền nhiều đơn (mỗi đơn ≤5 sản phẩm) → kéo-thả lên. Hệ thống báo kết quả từng dòng.</p>
+          <div class="grid g3" style="margin-bottom:12px">
+            <div class="f"><select class="ctrl"><option>Dịch vụ mặc định: Chuyên tuyến</option><option>DHL</option><option>Fedex</option><option>UPS</option></select></div>
+            <div class="f"><select class="ctrl"><option>HUB: Chuyên tuyến - Singapore</option><option>Chuyên tuyến - EU</option></select></div>
+            <div class="f"><select class="ctrl"><option>Chi nhánh: TP.HCM</option><option>Hà Nội</option><option>Huế</option><option>Bảo Lộc</option><option>Cần Thơ</option></select></div>
+          </div>
+          <div class="drop" onclick="toast('Chọn file Excel/CSV để tải lên (demo)')"><div class="di">📄⬆️</div><div style="margin-top:8px">Kéo &amp; thả file Excel/CSV — hoặc <b>bấm để chọn tệp</b></div>
+            <div style="margin-top:8px"><a href="#" onclick="toast('Tải VietAn_Ecom_Import_Template.xlsx (đủ trường như YUN: FOB+giá bán, IOSS/EORI, manufacturer…)');return false" style="font-weight:600">⬇ Tải file mẫu (VietAn_Ecom_Import_Template.xlsx)</a></div></div>
+          <div style="margin:16px 0 8px;font-weight:600;font-size:13px">Kết quả lần import gần nhất</div>
+          <div class="brow" style="margin-bottom:10px"><span class="badge b-ok">✅ 46 đơn thành công</span><span class="badge b-late">⚠️ 2 dòng lỗi</span><button class="btn ghost sm" onclick="toast('Tải lại 2 dòng lỗi (demo)')">Xuất dòng lỗi</button></div>
+          <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders" style="min-width:640px">
+            <thead><tr><th>Dòng</th><th>Mã đơn shop</th><th>Người nhận</th><th>Kết quả</th><th>VA Bill</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td class="bill">ORD-501</td><td>Marie Curie</td><td><span class="badge b-ok">Tạo OK</span></td><td class="bill">6156989</td></tr>
+              <tr><td>2</td><td class="bill">ORD-502</td><td>John Lee</td><td><span class="badge b-ok">Tạo OK</span></td><td class="bill">6156992</td></tr>
+              <tr><td>3</td><td class="bill">ORD-503</td><td>(trống)</td><td><span class="badge b-late">Lỗi: thiếu nước đến</span></td><td>—</td></tr>
+            </tbody></table></div></div>
+        </div></div></div>
+
+        <!-- MANUAL -->
+        <div id="pm-manual" hidden><div class="epanel"><div class="epanel-b">
+          <h3 style="font-size:15px;margin-bottom:4px">Đánh bill lẻ (nhập tay)</h3>
+          <p class="muted" style="font-size:12.5px;margin-bottom:14px">Cho shop ít đơn. Nhập nhanh 1 đơn với 1–5 sản phẩm theo SKU.</p>
+          <div class="grid g3" style="margin-bottom:12px">
+            <div class="f req"><input class="ctrl" placeholder="Mã đơn của shop (REF)" value="TT-90011"><span class="star">*</span></div>
+            <div class="f"><select class="ctrl"><option>Nguồn: TikTok Shop</option><option>Shopify</option><option>Shopee</option><option>Lazada</option><option>Khác</option></select></div>
+            <div class="f"><select class="ctrl"><option>Chi nhánh: TP.HCM</option><option>Hà Nội</option></select></div>
+          </div>
+          <div class="grid g2" style="margin-bottom:8px">
+            <div class="f req"><input class="ctrl" placeholder="Người nhận"><span class="star">*</span></div>
+            <div class="f req"><input class="ctrl" placeholder="Nước đến"><span class="star">*</span></div>
+            <div class="f req c2"><input class="ctrl" placeholder="Địa chỉ người nhận"><span class="star">*</span></div>
+          </div>
+          <div class="grid g3" style="margin-bottom:14px">
+            <div class="f"><select class="ctrl"><option>Chuyên tuyến</option><option>DHL</option><option>Fedex</option><option>UPS</option></select></div>
+            <div class="f"><select class="ctrl"><option>Chuyên tuyến - Singapore</option><option>Chuyên tuyến - EU</option></select></div>
+            <div class="f"><input class="ctrl" type="number" step="0.1" placeholder="Cân nặng (kg) · để trống nếu VA cân"></div>
+          </div>
+          <div style="font-weight:600;font-size:13px;margin-bottom:8px">Sản phẩm (tối đa 5)</div>
+          <div class="eprod-row eprod-head"><div>Tên hàng (EN)</div><div>SKU</div><div>SL</div><div>Giá FOB</div><div>Giá bán</div><div>Mã HS</div><div></div></div>
+          <div id="eprodBody"></div>
+          <button type="button" class="chip-btn" style="margin-top:6px" onclick="addEprod()">＋ Thêm sản phẩm</button>
+          <details style="margin-top:14px">
+            <summary style="cursor:pointer;font-weight:600;font-size:13px;color:var(--green-d);padding:4px 0">＋ Khai báo hải quan nâng cao (tuỳ chọn — cho US/EU, đủ trường như YUN)</summary>
+            <div class="grid g3" style="margin-top:12px">
+              <div class="f"><input class="ctrl" placeholder="Tổng giá trị khai (Declared Value)"></div>
+              <div class="f"><select class="ctrl"><option>Loại hàng: general</option><option>battery (pin)</option><option>liquid (lỏng)</option><option>sensitive</option></select></div>
+              <div class="f"><input class="ctrl" placeholder="CMND/ID người nhận (Certificate)"></div>
+              <div class="f"><input class="ctrl" placeholder="IOSS (EU)"></div>
+              <div class="f"><input class="ctrl" placeholder="EORI (EU)"></div>
+              <div class="f"><input class="ctrl" placeholder="VAT number"></div>
+              <div class="f c2"><input class="ctrl" placeholder="Link sản phẩm / gian hàng (SalesPlatformLink)"></div>
+              <div class="f"><input class="ctrl" placeholder="Mã giao dịch thanh toán"></div>
+              <div class="f c3"><input class="ctrl" placeholder="Nhà SX: tên · nước · tỉnh · thành phố · địa chỉ (Manufacturer)"></div>
+            </div>
+            <p class="muted" style="font-size:11.5px;margin-top:8px">ℹ️ Chi tiết vật liệu/brand/model theo từng sản phẩm khai qua <b>API</b> hoặc <b>file Excel mẫu</b> (sheet Items_ChiTiet).</p>
+          </details>
+          <div class="panel-f" style="border:none;padding:14px 0 0;background:transparent">
+            <button class="btn ghost" onclick="toast('Đã lưu nháp đơn lẻ (demo)')">💾 Lưu nháp</button>
+            <button class="btn primary" style="margin-left:auto" onclick="toast('🎉 Đã tạo đơn e-com & cấp mã bill 6156993 — nhãn A6/A4/ZPL sẵn sàng.','good')">✓ Tạo đơn &amp; cấp bill</button></div>
+        </div></div></div>
+      </div>
+
+      <!-- TAB: Đơn e-com -->
+      <div class="etab-p" data-etab="list" hidden>
+        <div class="toolbar">
+          <div class="chips" id="ecomSrcChips"></div>
+          <div class="tb-row">
+            <div class="search"><span class="si">🔍</span><input id="ecomSearch" placeholder="Tìm theo mã đơn shop, VA Bill, người nhận…" oninput="renderEcom()"></div>
+            <button class="btn ghost sm" onclick="toast('In nhãn hàng loạt các đơn đã chọn (demo)')">🖨 In nhãn hàng loạt</button>
+            <select class="ctrl" style="width:auto;height:38px" onchange="toast('In theo khổ '+this.value+' (demo)')"><option>Khổ nhãn: A6</option><option>A4</option><option>ZPL</option></select>
+            <button class="btn ghost sm" onclick="toast('Xuất Excel danh sách (demo)')">⬇ Xuất Excel</button>
+          </div>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders" style="min-width:1040px">
+          <thead><tr><th style="width:30px"><input type="checkbox"></th><th>Nguồn</th><th>Mã đơn shop</th><th>VA Bill</th><th>Người nhận</th><th>SP</th><th>Cân</th><th>Trạng thái</th><th>Ghi chú</th><th>Thao tác</th></tr></thead>
+          <tbody id="ecomBody"></tbody></table></div>
+          <div class="tbl-foot"><span id="ecomCount">—</span></div>
+        </div>
+      </div>
+
+      <!-- TAB: Kết nối & API -->
+      <div class="etab-p" data-etab="conn" hidden>
+        <div class="two-col" style="align-items:start">
+          <div class="epanel"><div class="epanel-b">
+            <h3 style="font-size:15px;margin-bottom:12px">🔑 API Key</h3>
+            <div class="keyrow"><span class="kt" style="background:var(--green-tint);color:var(--green-d)">PRODUCTION</span><span class="kk">d5ca74464f70dfe6045cb13b29c9f391</span><button class="btn ghost sm" onclick="copyText('d5ca74464f70dfe6045cb13b29c9f391')">Sao chép</button></div>
+            <div class="keyrow"><span class="kt" style="background:var(--amber-bg);color:var(--amber)">SANDBOX</span><span class="kk">test_9b21aa04c7e1f3d6b8452170acf9e0d2</span><button class="btn ghost sm" onclick="copyText('test_9b21aa04c7e1f3d6b8452170acf9e0d2')">Sao chép</button></div>
+            <div style="display:flex;gap:8px;margin-top:6px"><button class="btn ghost sm" onclick="toast('Tạo lại key production (demo)')">↻ Tạo lại key</button><button class="btn ghost sm" onclick="toast('Bảo mật: bật ký HMAC (demo)')">🔒 Bật HMAC</button></div>
+            <h3 style="font-size:15px;margin:20px 0 10px">🔔 Webhook trạng thái</h3>
+            <div class="f" style="margin-bottom:10px"><input class="ctrl" placeholder="https://shop.com/webhook/vietan" value="https://myshop.tiktok.com/hooks/va"></div>
+            <div class="brow" style="gap:6px 14px"><span style="font-weight:600;color:var(--ink)">Sự kiện:</span>
+              <label style="font-size:12px"><input type="checkbox" checked> created</label>
+              <label style="font-size:12px"><input type="checkbox" checked> picked_up</label>
+              <label style="font-size:12px"><input type="checkbox" checked> departed</label>
+              <label style="font-size:12px"><input type="checkbox" checked> delivered</label>
+              <label style="font-size:12px"><input type="checkbox" checked> exception</label></div>
+            <div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary sm" onclick="toast('Đã lưu webhook (demo)')">Lưu webhook</button><button class="btn ghost sm" onclick="toast('Gửi sự kiện test tới URL (demo)')">Gửi test</button></div>
+          </div></div>
+          <div class="epanel"><div class="epanel-b">
+            <h3 style="font-size:15px;margin-bottom:12px">🛍️ Gắn nguồn sàn</h3>
+            <p class="muted" style="font-size:12px;margin-bottom:12px">Đơn đẩy qua API/Excel được gắn nhãn nguồn để dễ lọc &amp; đối soát. Chọn sàn shop bạn đang bán:</p>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div class="conn-card"><div class="ci" style="background:#f1f1f4">🎵</div><div style="flex:1"><div class="cn">TikTok Shop</div><div class="cs">Gắn nhãn nguồn cho đơn từ TikTok</div></div><button class="btn ghost sm" onclick="toast('Kết nối TikTok Shop (demo)')">Kết nối</button></div>
+              <div class="conn-card"><div class="ci" style="background:#e7f5ea">🛍️</div><div style="flex:1"><div class="cn">Shopify</div><div class="cs">Gắn nhãn nguồn cho đơn từ Shopify</div></div><button class="btn ghost sm" onclick="toast('Kết nối Shopify (demo)')">Kết nối</button></div>
+              <div class="conn-card"><div class="ci" style="background:#fdeee3">🧡</div><div style="flex:1"><div class="cn">Shopee / Lazada</div><div class="cs">Gắn nhãn nguồn cho đơn từ Shopee, Lazada</div></div><button class="btn ghost sm" onclick="toast('Kết nối Shopee/Lazada (demo)')">Kết nối</button></div>
+            </div>
+            <h3 style="font-size:15px;margin:20px 0 10px">📄 Tài liệu API</h3>
+            <p class="muted" style="font-size:12.5px;margin-bottom:10px">Đặc tả đầy đủ endpoint, JSON, mã lỗi, webhook, idempotency &amp; rate-limit.</p>
+            <button class="btn primary sm" onclick="toast('Mở tài liệu API (bản đặc tả gửi kèm)')">📖 Mở tài liệu API</button>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICE & GỢI Ý DỊCH VỤ ============ -->
+    <section class="view" id="v-create-ai" hidden>
+      <div class="page-h"><h1>🤖 Tạo đơn bằng AI</h1><p>Dán thông tin người nhận &amp; chụp ảnh mặt hàng — AI tự phân tích và điền vào từng ô. Bạn chỉ cần rà soát lại.</p>
+        <span class="demo-flag" style="margin-left:auto">🧪 Bản thử nghiệm • AI mô phỏng (demo)</span></div>
+
+      <div class="ai-banner" id="ai_banner" hidden><span>✅</span><div>AI đã điền dữ liệu. Vui lòng <b>kiểm tra các ô được tô xanh</b> trước khi tạo đơn — AI có thể sai, nhất là mã HS.</div></div>
+
+      <!-- KHỐI 1: NGƯỜI NHẬN -->
+      <div class="epanel"><div class="epanel-b">
+        <div class="panel-h"><div class="pi">👥</div><div><h2>Người nhận — dán nhanh bằng AI</h2><p>Copy toàn bộ thông tin người nhận (tên, điện thoại, địa chỉ, nước…) rồi dán vào ô dưới.</p></div></div>
+        <div class="ai-paste">
+          <textarea id="ai_paste" placeholder="Dán vào đây, ví dụ:&#10;Mr. Lim — LINEX CO. LTD&#10;+65 8123 4567 · lim@linex.sg&#10;1 Raffles Place, #20-01, Tower One&#10;Singapore 238859"></textarea>
+          <div class="brow" style="margin-top:8px">
+            <button class="btn primary" onclick="aiParseReceiver()">✨ AI phân tích &amp; điền</button>
+            <button class="btn ghost sm" onclick="aiPasteSample()">Dán dữ liệu mẫu</button>
+            <button class="btn ghost sm" onclick="aiClearReceiver()">Xóa trắng</button>
+            <span id="ai_rconf" class="ai-conf"></span>
+          </div>
+        </div>
+        <div class="grid g3" style="margin-top:14px">
+          <div class="f hasflag" data-aif="country"><span class="flag" id="ai_flag">🏳️</span><input class="ctrl" id="ai_country" list="countries" placeholder="Nước đến (country)" oninput="aiUpdateFlag()"></div>
+          <div class="f" data-aif="company"><input class="ctrl" id="ai_company" placeholder="Công ty (company)"></div>
+          <div class="f" data-aif="contact"><input class="ctrl" id="ai_contact" placeholder="Người liên hệ (contact)"></div>
+          <div class="f" data-aif="tel"><input class="ctrl" id="ai_tel" placeholder="Điện thoại (tel)"></div>
+          <div class="f" data-aif="email"><input class="ctrl" id="ai_email" placeholder="Email"></div>
+          <div class="f" data-aif="tax"><input class="ctrl" id="ai_tax" placeholder="Tax ID / mã số thuế"></div>
+          <div class="f" data-aif="city"><input class="ctrl" id="ai_city" placeholder="Thành phố (city)"></div>
+          <div class="f" data-aif="state"><input class="ctrl" id="ai_state" placeholder="Tỉnh / bang (state)"></div>
+          <div class="f" data-aif="postal"><input class="ctrl" id="ai_postal" placeholder="Postal / ZIP"></div>
+          <div class="f c2" data-aif="addr1"><input class="ctrl" id="ai_addr1" placeholder="Địa chỉ 1 (address 1)"></div>
+          <div class="f c2" data-aif="addr2"><input class="ctrl" id="ai_addr2" placeholder="Địa chỉ 2 (address 2)"></div>
+          <div class="f c2" data-aif="addr3"><input class="ctrl" id="ai_addr3" placeholder="Địa chỉ 3 (address 3)"></div>
+        </div>
+      </div></div>
+
+      <!-- KHỐI 2: MẶT HÀNG (INVOICE) TỪ ẢNH -->
+      <div class="epanel"><div class="epanel-b">
+        <div class="panel-h"><div class="pi">🧾</div><div><h2>Mặt hàng (Invoice) — chụp ảnh, AI nhận diện</h2><p>Chụp/tải ảnh mặt hàng → AI đọc ra tên EN/VN, nhà SX, chất liệu, xuất xứ và gợi ý mã HS.</p></div></div>
+
+        <div class="ai-drop" id="ai_drop" onclick="document.getElementById('ai_file').click()">
+          <input type="file" id="ai_file" accept="image/*" multiple hidden onchange="aiOnFiles(this.files)">
+          <div class="ai-drop-ic">📸</div>
+          <div><b>Chụp / tải ảnh mặt hàng</b><div class="muted" style="font-size:12.5px">Bấm để chọn ảnh (có thể chọn nhiều) — hoặc thử nhanh bằng ảnh mẫu bên dưới.</div></div>
+        </div>
+        <div class="brow" style="margin:10px 0 4px;flex-wrap:wrap"><span class="muted" style="font-size:12.5px">Ảnh mẫu:</span><div class="chips" id="ai_samples" style="margin:0"></div></div>
+        <div class="ai-photos" id="ai_photos"></div>
+
+        <label class="ai-toggle"><input type="checkbox" id="ai_multi"> <span>1 ảnh có nhiều món → AI tách thành nhiều dòng</span></label>
+
+        <div class="brow" style="margin:12px 0">
+          <button class="btn primary" id="ai_recog" onclick="aiRecognize()" disabled>✨ AI nhận diện &amp; tạo dòng hàng</button>
+          <span id="ai_recogHint" class="muted" style="font-size:12.5px">Thêm ít nhất 1 ảnh để AI nhận diện.</span>
+        </div>
+
+        <div class="tbl-wrap"><div class="tbl-scroll"><table class="orders ai-inv" style="min-width:900px">
+          <thead><tr><th style="width:34px">#</th><th>Mô tả hàng hóa (AI)</th><th style="width:70px">Xuất xứ</th><th style="width:170px">Mã HS (chọn 1)</th><th style="width:120px">SL / ĐVT</th><th style="width:90px">Đơn giá</th><th style="width:90px">Thành tiền</th><th style="width:40px"></th></tr></thead>
+          <tbody id="ai_invBody"></tbody>
+        </table></div></div>
+        <div class="brow" style="justify-content:space-between;margin-top:10px">
+          <select class="ctrl" id="ai_cur" style="max-width:120px" onchange="aiCalc()"><option>USD</option><option>EUR</option><option>VND</option></select>
+          <div style="font-weight:700">Tổng giá trị invoice: <span id="ai_total" class="price-total">$0.00</span></div>
+        </div>
+        <div class="price-note" style="margin-top:12px">⚠️ Mã HS do AI gợi ý (top 3 từ danh mục Việt An) chỉ mang tính tham khảo. Mã HS cuối cùng là trách nhiệm của người khai — vui lòng kiểm tra hoặc hỏi nhân viên Việt An.</div>
+      </div></div>
+
+      <div class="brow" style="margin-top:14px">
+        <button class="btn primary" onclick="toast('Demo: đã đưa dữ liệu AI sang bản tạo đơn đầy đủ');nav('create')">➡️ Chuyển sang tạo đơn đầy đủ</button>
+        <button class="btn ghost" onclick="toast('Demo: đã lưu nháp đơn AI')">💾 Lưu nháp (demo)</button>
+      </div>
+    </section>
+
+    <section class="view" id="v-price" hidden>
+      <div class="page-h"><h1>Giá &amp; gợi ý chọn dịch vụ</h1><p>Nhập nước đến + cân nặng + kích thước → so sánh giá &amp; gợi ý dịch vụ phù hợp.</p>
+        <span class="demo-flag" style="margin-left:auto">● Biểu giá DEMO — chờ bảng giá thật của Việt An</span></div>
+      <div class="etabs">
+        <button class="etab on" data-ptab="lookup" onclick="priceTab('lookup')">🔎 Tra cứu &amp; gợi ý</button>
+        <button class="etab" data-ptab="tables" onclick="priceTab('tables')">📋 Bảng giá dịch vụ</button>
+        <button class="etab" data-ptab="manage" onclick="priceTab('manage')">🛠 Quản lý &amp; nhập giá</button>
+      </div>
+
+      <!-- TAB: Tra cứu -->
+      <div class="ptab-p" data-ptab="lookup">
+        <div class="epanel"><div class="epanel-b">
+          <div class="grid g3" style="margin-bottom:10px">
+            <div class="f"><label class="label">Nước đến <span class="req">*</span></label><input class="ctrl" id="priceCountry" list="countries" placeholder="VD: Singapore" value="Singapore"></div>
+            <div class="f"><label class="label">Cân nặng thực (kg) <span class="req">*</span></label><input class="ctrl" id="priceKg" type="number" step="0.1" min="0" placeholder="VD: 2" value="2"></div>
+            <div class="f"><label class="label">Loại hàng</label><select class="ctrl" id="priceType"><option value="PACK">Hàng hóa (PACK)</option><option value="DOC">Chứng từ (DOC)</option></select></div>
+          </div>
+          <div class="grid g3" style="margin-bottom:12px">
+            <div class="f"><label class="label">Dài (cm) <span class="opt">(để tính quy đổi & phụ thu)</span></label><input class="ctrl" id="priceD" type="number" placeholder="cm" value="30"></div>
+            <div class="f"><label class="label">Rộng (cm)</label><input class="ctrl" id="priceW" type="number" placeholder="cm" value="20"></div>
+            <div class="f"><label class="label">Cao (cm)</label><input class="ctrl" id="priceH" type="number" placeholder="cm" value="15"></div>
+          </div>
+          <button class="btn primary" onclick="doPriceLookup()">🔎 Tra cứu &amp; so sánh giá</button>
+        </div></div>
+        <div id="priceResult" style="margin-top:16px"></div>
+      </div>
+
+      <!-- TAB: Bảng giá -->
+      <div class="ptab-p" data-ptab="tables" hidden>
+        <div class="brow" style="margin-bottom:12px"><b style="color:var(--ink)">Chọn dịch vụ:</b><div class="chips" id="rateSvcChips" style="margin:0"></div></div>
+        <div id="rateTableBox"></div>
+      </div>
+
+      <!-- TAB: Quản lý & nhập giá -->
+      <div class="ptab-p" data-ptab="manage" hidden>
+        <div id="pmgrList"></div>
+        <div id="priceEditor" hidden></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-home" hidden><div class="stub"><div class="se">🏠</div><h3>Trang chủ</h3><p>Bảng tin, lịch cut-off, thông báo lịch bay…</p></div></section>
+    <section class="view" id="v-import" hidden><div class="stub"><div class="se">📄</div><h3>Tạo đơn từ Excel</h3><p>Chọn dịch vụ + HUB → kéo-thả file Excel → tải file mẫu.</p></div></section>
+    <section class="view" id="v-help" hidden><div class="stub"><div class="se">💬</div><h3>Trợ giúp &amp; Góp ý</h3><p>Gửi yêu cầu hỗ trợ kèm ảnh/tệp.</p></div></section>
+    <section class="view" id="v-api" hidden><div class="stub"><div class="se">🔗</div><h3>API Tracking</h3><p>Hướng dẫn tích hợp link tracking cho shop/đối tác.</p></div></section>
+    <section class="view" id="v-pass" hidden><div class="stub"><div class="se">🔒</div><h3>Đổi mật khẩu</h3><p>Mật khẩu cũ → mới → xác nhận.</p></div></section>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="dr-h"><div><div class="muted" style="font-size:10.5px">Chi tiết đơn hàng</div><h3 id="dr-bill" class="bill" style="font-size:15px">—</h3></div>
+    <button class="dclose" onclick="closeDrawer()">✕</button></div>
+  <div class="dr-b" id="dr-body"></div>
+</aside>
+
+<div class="modal" id="modal">
+  <div class="scrim show" onclick="closeModal()" style="position:absolute"></div>
+  <div class="mbox"><div class="mbox-h"><span id="mIcon" style="font-size:17px">📇</span><h3 id="mTitle" style="font-size:14.5px">Sổ địa chỉ</h3><button class="dclose" style="margin-left:auto" onclick="closeModal()">✕</button></div>
+    <div class="mbox-b"><input class="msearch" id="mSearch" placeholder="Tìm nhanh…" oninput="renderPicker()"><div id="mList"></div></div></div>
+</div>
+<div class="modal" id="addonModal">
+  <div class="scrim show" onclick="closeAddons()" style="position:absolute"></div>
+  <div class="mbox"><div class="mbox-h"><span style="font-size:17px">➕</span><h3 style="font-size:14.5px">Dịch vụ cộng thêm</h3><button class="dclose" style="margin-left:auto" onclick="closeAddons()">✕</button></div>
+    <div class="mbox-b"><p class="muted" style="margin-bottom:11px">Chọn dịch vụ bạn cần (chọn nhiều). Danh sách sẽ quản lý trong hệ thống sau.</p><div id="addonList"></div></div>
+    <div class="mbox-f"><span class="muted" id="addonSel">Đã chọn 0</span><button class="btn primary sm" style="margin-left:auto" onclick="applyAddons()">Xác nhận</button></div></div>
+</div>
+
+<!-- MODAL: important notifications popup -->
+<div class="modal" id="popModal">
+  <div class="scrim show" onclick="closePop()" style="position:absolute"></div>
+  <div class="mbox">
+    <div class="mbox-h"><span style="font-size:18px">📢</span><h3 style="font-size:14.5px">Thông báo quan trọng</h3><button class="dclose" style="margin-left:auto" onclick="closePop()">✕</button></div>
+    <div class="mbox-b"><div class="pop-list" id="popList"></div></div>
+    <div class="mbox-f"><label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);cursor:pointer"><input type="checkbox" id="popHide" style="width:16px;height:16px;accent-color:var(--green)"> Không hiện lại hôm nay</label>
+      <button class="btn primary sm" style="margin-left:auto" onclick="closePop()">Đã hiểu</button>
+      <button class="btn ghost sm" onclick="closePop();nav('noti')">Xem tất cả</button></div>
+  </div>
+</div>
+
+<!-- print dropdown menu -->
+<div class="pmenu" id="pmenu">
+  <button onclick="printDo('In vận đơn Bill A4')">🖨 In vận đơn (Bill A4)</button>
+  <button onclick="printDo('In hóa đơn Invoice')">🧾 In hóa đơn (Invoice)</button>
+  <button onclick="printDo('Xuất Công văn cam kết')">📑 Công văn cam kết (CVCK)</button>
+  <button onclick="printDo('In nhãn A6')">🏷 In nhãn (A6)</button>
+</div>
+
+<!-- MODAL: chọn nhiều nhóm hàng -->
+<div class="modal" id="multiModal">
+  <div class="scrim show" onclick="closeMultiPick()" style="position:absolute"></div>
+  <div class="mbox">
+    <div class="mbox-h"><span style="font-size:18px">🧩</span><h3 style="font-size:14.5px">Chọn nhiều nhóm hàng</h3><button class="dclose" style="margin-left:auto" onclick="closeMultiPick()">✕</button></div>
+    <div class="mbox-b"><p class="hint" style="margin-bottom:10px">Tick các nhóm hàng có trong kiện — sẽ tạo bảng phân loại in kèm bill.</p><input class="msearch" id="multiSearch" placeholder="🔍 Tìm nhóm…" oninput="renderMultiPickList()"><div id="multiPickList"></div></div>
+    <div class="mbox-f"><span class="hint" id="multiSel">—</span><button class="btn primary sm" style="margin-left:auto" onclick="applyMulti()">Xác nhận</button></div>
+  </div>
+</div>
+
+<!-- MODAL: favorites (mặt hàng thường dùng) -->
+<div class="modal" id="favModal">
+  <div class="scrim show" onclick="closeFav()" style="position:absolute"></div>
+  <div class="mbox">
+    <div class="mbox-h"><span style="font-size:18px">⭐</span><h3 style="font-size:14.5px">Mặt hàng thường dùng</h3><button class="dclose" style="margin-left:auto" onclick="closeFav()">✕</button></div>
+    <div class="mbox-b"><p class="hint" style="margin-bottom:11px">Chọn nhanh mặt hàng đã lưu (khỏi phải chọn lại nhóm dài &amp; gõ tên).</p><div id="favList"></div></div>
+  </div>
+</div>
+
+<!-- MODAL: photos -->
+<div class="modal" id="photoModal">
+  <div class="scrim show" onclick="closePhotos()" style="position:absolute"></div>
+  <div class="mbox" style="width:600px">
+    <div class="mbox-h"><span style="font-size:18px">🖼</span><h3 id="photoTitle" style="font-size:14.5px">Ảnh đơn hàng</h3><button class="dclose" style="margin-left:auto" onclick="closePhotos()">✕</button></div>
+    <div class="mbox-b"><p class="hint" style="margin-bottom:11px">Ảnh kiện hàng chụp trên cân tại kho — cơ sở đối chiếu khối lượng &amp; tình trạng hàng.</p><div class="photo-grid" id="photoGrid"></div></div>
+  </div>
+</div>
+
+<!-- MODAL: report trouble -->
+<div class="modal" id="trbModal">
+  <div class="scrim show" onclick="closeTrb()" style="position:absolute"></div>
+  <div class="mbox" style="width:540px">
+    <div class="mbox-h"><span style="font-size:18px">⚠️</span><h3 style="font-size:14.5px">Báo cáo sự cố đơn hàng</h3><button class="dclose" style="margin-left:auto" onclick="closeTrb()">✕</button></div>
+    <div class="mbox-b">
+      <div class="trb-ctx" id="trbCtx"></div>
+      <div class="grid g2" style="gap:11px">
+        <div class="f"><select class="ctrl" id="trbType"></select></div>
+        <div class="f"><select class="ctrl" id="trbLv"><option value="low">Mức độ: Thường</option><option value="mid" selected>Mức độ: Gấp</option><option value="high">Mức độ: Rất gấp</option></select></div>
+        <div class="f c2"><textarea class="ctrl" id="trbDesc" rows="3" placeholder="Mô tả chi tiết sự cố (điều gì xảy ra, khi nào, mong muốn xử lý…)"></textarea></div>
+        <div class="f"><input class="ctrl" id="trbReq" placeholder="Người yêu cầu" value="Nguyễn Văn A"></div>
+        <div class="f"><input class="ctrl" id="trbContact" placeholder="SĐT / Email liên hệ" value="0901 234 567"></div>
+        <div class="f c2"><label class="fs-file" onclick="toast('Chọn ảnh/chứng từ đính kèm (demo)')">📎 Đính kèm ảnh / chứng từ (tuỳ chọn)</label></div>
+      </div>
+    </div>
+    <div class="mbox-f"><span class="hint">Yêu cầu gửi tới bộ phận CS Việt An</span>
+      <button class="btn primary sm" style="margin-left:auto" onclick="submitTrouble()">Gửi yêu cầu</button>
+      <button class="btn ghost sm" onclick="closeTrb()">Hủy</button></div>
+  </div>
+</div>
+
+<!-- MODAL: surcharge confirm on create -->
+<div class="modal" id="feeModal">
+  <div class="scrim show" onclick="closeFee()" style="position:absolute"></div>
+  <div class="mbox" style="width:440px">
+    <div class="mbox-b" style="text-align:center;padding:24px 22px">
+      <div style="width:64px;height:64px;border-radius:50%;border:3px solid var(--amber);color:var(--amber);display:grid;place-items:center;font-size:32px;margin:0 auto 14px">ⓘ</div>
+      <h3 style="font-size:16px;margin-bottom:10px">Đơn hàng phát sinh phụ phí</h3>
+      <div id="feeLines" style="font-size:13.5px;color:var(--muted);line-height:1.9"></div>
+      <div id="feeTotal" style="font-size:15px;font-weight:700;margin-top:8px"></div>
+      <p style="font-size:13px;margin-top:12px">Bạn có chắc muốn tiếp tục tạo đơn hàng này không?</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:18px">
+        <button class="btn primary" onclick="confirmCreate()">Đồng ý tạo đơn hàng</button>
+        <button class="btn ghost" onclick="closeFee()">Hủy bỏ</button>
+      </div>
+      <p class="hint" style="margin-top:12px">Biểu phí đang là số liệu demo — sẽ nối biểu phí thật của Việt An.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

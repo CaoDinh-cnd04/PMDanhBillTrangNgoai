@@ -1,0 +1,35 @@
+{
+  "name": "vietan-express-portal",
+  "version": "2.0.0",
+  "description": "Việt An Express Portal - Modular Monolith & Clean Architecture in TypeScript",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc && node scripts/build-client.js",
+    "start": "node dist/index.js",
+    "test": "tsx test/run-tests.ts"
+  },
+  "keywords": [
+    "vietan-express",
+    "logistics",
+    "modular-monolith",
+    "clean-architecture",
+    "typescript"
+  ],
+  "author": "Việt An Express",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "csv-parse": "^7.0.3",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
